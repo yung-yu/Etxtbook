@@ -75,10 +75,10 @@ public class TurnBook extends PageWidget{
 
 		});
 	}
-	public void prePage(){
-        //將文字繪於當前頁
-		pagefactory.onDraw(mCurPageCanvas);
-			//是否從左邊翻向右邊
+	public boolean prePage(){	
+		if(pagefactory.isfirstPage())return false;
+			//是否從左邊翻向右邊		
+		  
 			try {
 				//true，顯示上一頁					
 				pagefactory.prePage();
@@ -86,14 +86,13 @@ public class TurnBook extends PageWidget{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}						
-			if(pagefactory.isfirstPage())return ;
-			pagefactory.onDraw(mNextPageCanvas);
+			pagefactory.onDraw(mCurPageCanvas);
+			setBitmaps(mCurPageBitmap, mCurPageBitmap);
 			  postInvalidate();
+			  return true;
 	}
-	public void NextPage(){	  
-        //將文字繪於當前頁
-		pagefactory.onDraw(mCurPageCanvas);
-	
+	public boolean NextPage(){	 		  
+		if(pagefactory.islastPage())return false; 
 			try {
 				//false，顯示下一頁							
 				pagefactory.nextPage();
@@ -101,10 +100,10 @@ public class TurnBook extends PageWidget{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			if(pagefactory.islastPage())return ;
-			pagefactory.onDraw(mNextPageCanvas);
-		setBitmaps(mCurPageBitmap, mNextPageBitmap);
+			pagefactory.onDraw(mCurPageCanvas);
+			setBitmaps(mCurPageBitmap, mCurPageBitmap);
         postInvalidate();
+        return true;
 	}
 	/**書頁背景*/
    public void setBookBackgroundBitmap(Bitmap bmp){

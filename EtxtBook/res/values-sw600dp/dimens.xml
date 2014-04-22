@@ -16,4 +16,6 @@
     <dimen name="bookitem_height">150dp</dimen>
       <dimen name="bookitem_padding_left">35dp</dimen>
     <dimen name="bookitem_padding_right">20dp</dimen>
+    <dimen name="file_back_widthheight">70dp</dimen>
+     <dimen name="txt_msg_textsize">16dp</dimen>
 </resources>

@@ -33,6 +33,8 @@ public class BookPageFactory{
 	private int mHeight;
 	private Vector<String> m_lines = new Vector<String>();
 	private float m_fontSize = 30;
+     float m_fontSize_forMsg = 20;
+
 	private int m_textColor = Color.BLACK;
 	private int m_backColor = 0xffffffee; // 背景顏色
 	private int marginWidth = 40; // 左右與邊緣的距離
@@ -48,7 +50,8 @@ public class BookPageFactory{
     private int delay_lineCount = 1;
 
 	private Paint mPaint;
-
+	private Paint mPaint_formsg;
+	private String BookName = "";
 	public BookPageFactory(int w, int h,int marginWidth,int marginHeight) {
 		// TODO Auto-generated constructor stub
 		mWidth = w;
@@ -58,8 +61,12 @@ public class BookPageFactory{
 		mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mPaint.setTextAlign(Align.LEFT);//設置繪制文字的對齊方向  	
 		mPaint.setColor(m_textColor);
-		mPaint.setTextSize(m_fontSize);
-		setM_fontSize(m_fontSize);// 可顯示的行數
+		mPaint_formsg = new Paint(Paint.ANTI_ALIAS_FLAG);
+		mPaint_formsg.setColor(m_textColor);
+		setM_fontSize_forMsg(30);
+		setM_fontSize(30);// 可顯示的行數
+	
+	
 	}
 	
 	public void openBook(Context context,String fileName){
@@ -323,8 +330,7 @@ public class BookPageFactory{
 	public void onDraw(Canvas c) {
 		if (m_lines.size() == 0)
 			m_lines = pageDown();	
-		FontMetrics fontMetrics = mPaint.getFontMetrics();
-	    int textheight = (int) (fontMetrics.descent-fontMetrics.ascent+fontMetrics.leading)+1;
+	    int textheight = (int) (mPaint.descent() - mPaint.ascent())+1;
 		if (m_lines.size() > 0) {	
 			c.drawColor(0xffffffee);
 			if (m_book_bg != null){
@@ -332,8 +338,7 @@ public class BookPageFactory{
 			}else{
 						c.drawColor(m_backColor);
 			}
-			int y = marginHeight;
-		
+			int y = 0;
 			for (String strLine : m_lines) {
 				y += textheight;
 				//從（x,y）坐標將文字繪於手機屏幕		
@@ -344,10 +349,21 @@ public class BookPageFactory{
 		float fPercent = (float) (m_mbBufBegin * 1.0 / m_mbBufLen);
 		DecimalFormat df = new DecimalFormat("#0.0");
 	    strPercent = df.format(fPercent * 100) + "%";
-		
+	    mPaint_formsg.setTextSize(m_fontSize_forMsg);
 		//計算999.9%所占的像素寬度	
-		int nPercentWidth = (int) mPaint.measureText("999.9%") + 1;
-		 c.drawText(strPercent, mWidth-marginWidth-nPercentWidth, marginHeight , mPaint);
+		int nPercentWidth = (int) mPaint.measureText(strPercent) + 1;
+		mPaint_formsg.setTextAlign(Align.RIGHT);
+		 int th = (int) (mPaint_formsg.descent() - mPaint_formsg.ascent());
+		c.drawText(strPercent, mWidth, mHeight-marginHeight-th , mPaint_formsg);
+		mPaint_formsg.setTextAlign(Align.LEFT);
+		int size=mPaint_formsg.breakText(BookName, true, mWidth-nPercentWidth,null);
+		if(size<BookName.length())
+			BookName = BookName.substring(0,size);
+		c.drawText(BookName, 0,mHeight-marginHeight-th, mPaint_formsg);
+	}
+
+	public void setBookName(String bookName) {
+		BookName = bookName;
 	}
 
 	public void setBgBitmap(Bitmap BG) {
@@ -392,6 +408,9 @@ public class BookPageFactory{
 	}	
 	public int  getM_textColor() {
 		return m_textColor;
+	}
+	public void setM_fontSize_forMsg(float m_fontSize_forMsg) {
+		this.m_fontSize_forMsg = m_fontSize_forMsg;
 	}
 	/**設定書頁背景顏色*/
 	public void setM_backColor(int m_backColor) {

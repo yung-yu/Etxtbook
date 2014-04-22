@@ -34,6 +34,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -66,6 +67,7 @@ public class BookActivity extends Activity{
 	Bitmap myBitmap;
 	ImageLoader mImageLoader;
 	boolean isTable=false;
+    String bookname;
  	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,10 +84,12 @@ public class BookActivity extends Activity{
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         Bundle bd = getIntent().getExtras();
 	    filePath = bd.getString("filepath");
+	    bookname = bd.getString("bookname");
         initImageLoader();
         mBookData = new BookData(this);
         decode_array = parent.getResources().getStringArray(R.array.decoding_value);	    
 	    int magin = (int) getResources().getDimension(R.dimen.bookPage_magin);
+	    Log.d("book",dm.widthPixels+":"+dm.heightPixels);
 	    mTurnBook = new TurnBook(this, dm.widthPixels, dm.heightPixels,magin,magin);	
 	    setContentView(mTurnBook);
 	    mTurnBook.setVisibility(View.INVISIBLE);
@@ -145,6 +149,8 @@ public class BookActivity extends Activity{
 		mTurnBook.setBookFile(filePath, false);
 		if(isTable)
 			mTurnBook.getBookPageFactory().setDelay_lineCount(3);
+		mTurnBook.getBookPageFactory().setBookName(bookname);
+		mTurnBook.getBookPageFactory().setM_fontSize_forMsg(getResources().getDimension(R.dimen.txt_msg_textsize));
 		mTurnBook.setTextSize(sharePerferenceHelper.getIntent(this).getInt(BOOK_TEXT_SIZE, 30));
 		mTurnBook.setTextColor(sharePerferenceHelper.getIntent(this).getInt(BOOK_TEXT_COLOR, Color.BLACK));
 		encode = mBookData.getBookEncode(parent,filePath);
@@ -292,29 +298,30 @@ public class BookActivity extends Activity{
 	    return true;
 	}
 	
-	boolean isclick = true;
+	boolean isclick1 = false;
+	boolean isclick2 = false;
   @Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		// TODO Auto-generated method stub
 	  if(event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN)
 	  {  
-		  if(isclick)
+		  if(isclick1)
 		  {   	 
-			  isclick =false;
+			  isclick1 =false;
 			  mTurnBook.NextPage();
 		  }else{
-			  isclick = true;
+			  isclick1 = true;
 		  }
 		  return true;
 	  }
 	  else if(event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP)
 	  { 
-	    if(isclick)
-	   {   
-		  isclick =false;
-		  mTurnBook.prePage();
-	   }else{
-			  isclick = true;
+		  if(isclick2)
+		  {   
+			  isclick2 =false;
+			  mTurnBook.prePage();
+		  }else{
+			  isclick2 = true;
 		  }
 		  return true;
 	  }

@@ -24,6 +24,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -69,7 +70,7 @@ public class MainActivity extends Activity {
 		gv_desk = (GridView)findViewById(R.id.desk);
 		iv_addbook = (ImageView)findViewById(R.id.imageButton1);
 		bt_clearcache = (ImageView)findViewById(R.id.imageButton2);
-		tv_Msg = (TextView)findViewById(R.id.textView1);
+		tv_Msg = (TextView)findViewById(R.id.tv_msg);
 	    tv_Msg.setText(getString(R.string.easy_read));
 		mBookAdapter = new BookAdapter(this);
 		gv_desk.setAdapter(mBookAdapter);
@@ -85,15 +86,12 @@ public class MainActivity extends Activity {
 				{   
 					Bundle bd = new Bundle();
 					bd.putString("filepath",booklist.get(position).getBookPath());
+					bd.putString("bookname",booklist.get(position).getBookName());
 					Intent it=new Intent();
 					it.setClass(MainActivity.this, BookActivity.class);
 					it.putExtras(bd);
 					startActivity(it);
-					runOnUiThread( new Runnable() {
-						public void run() {
-							tv_Msg.setText(booklist.get(position).getBookName());
-						}
-					});
+			
 				}else{
 					Toast.makeText(context, getString(R.string.file_not_exist), Toast.LENGTH_SHORT).show();
 				}
@@ -417,7 +415,7 @@ private class BookAdapter extends BaseAdapter{
 	}
 
 	@Override
-	public View getView(int position, View v, ViewGroup arg2) {
+	public View getView(final int position, View v, ViewGroup arg2) {
 		// TODO Auto-generated method stub
 		viewholder vh;
 		if(v == null){
@@ -428,7 +426,22 @@ private class BookAdapter extends BaseAdapter{
 		}else{
 			vh = (viewholder) v.getTag();
 		}
-		vh.tv.setText(booklist.get(position).getBookName());
+		if(position<booklist.size())
+			vh.tv.setText(booklist.get(position).getBookName());
+		v.setOnTouchListener(new View.OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				runOnUiThread( new Runnable() {
+					public void run() {
+						if(position<booklist.size())
+							tv_Msg.setText(booklist.get(position).getBookName());
+					}
+				});
+				return false;
+			}
+		});
 		return v;
 	}
 	   

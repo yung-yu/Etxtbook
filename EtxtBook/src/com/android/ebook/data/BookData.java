@@ -29,8 +29,7 @@ public class BookData {
 
 		public final static String CREATE_DATE = "createdate";
 		public final static String CREATE_TIME = "createtime";
-		public final static String BOOK_UPDATE_DATE = "bookupdatedate";
-		public final static String BOOK_UPDATE_TIME = "bookupdatetime";
+
 		public final static String UPDATE_DATE = "updatedate";
 		public final static String UPDATE_TIME = "updatetime";
 	}
@@ -58,8 +57,8 @@ public class BookData {
 						Cloums.BOOK_ENCODE + " INTEGER ,"+
 						Cloums.CREATE_DATE + " INTEGER ,"+
 						Cloums.CREATE_TIME + " INTEGER ,"+
-						Cloums.BOOK_UPDATE_DATE + " INTEGER ,"+
-						Cloums.BOOK_UPDATE_TIME + " INTEGER "
+						Cloums.UPDATE_DATE + " INTEGER ,"+
+						Cloums.UPDATE_TIME + " INTEGER "
 						+" )";
 		
 		private final String Create_table_bookmark = 
@@ -148,16 +147,16 @@ public class BookData {
 		value.put(Cloums.BOOK_PATH, item.getBookPath());
 		value.put(Cloums.CREATE_DATE, date);
 		value.put(Cloums.CREATE_TIME, time);
-		value.put(Cloums.BOOK_UPDATE_DATE, date);
-		value.put(Cloums.BOOK_UPDATE_TIME, time);
+		value.put(Cloums.UPDATE_DATE, date);
+		value.put(Cloums.UPDATE_TIME, time);
 		insert(Table.BOOK, value);
 		close();
 	}
 	private void updateBookTime(String Path,int date ,int time)
 	{
 		ContentValues	v = new ContentValues();
-		v.put(Cloums.BOOK_UPDATE_DATE, date);
-		v.put(Cloums.BOOK_UPDATE_TIME, time);
+		v.put(Cloums.UPDATE_DATE, date);
+		v.put(Cloums.UPDATE_TIME, time);
 		update(Table.BOOK,v, Cloums.BOOK_PATH+" = \""+Path+"\"");
 
 	}
@@ -198,14 +197,14 @@ public class BookData {
 		value.put(Cloums.BOOK_TAG_PERCENT ,tag.getPercent());
 		value.put(Cloums.UPDATE_DATE,tag.getUpdate_date());
 		value.put(Cloums.UPDATE_TIME,tag.getUpdate_time());
-		updateBookTime(Path, tag.getUpdate_date(), tag.getUpdate_date());
+		updateBookTime(Path, tag.getUpdate_date(), tag.getUpdate_time());
 		insert(Table.BOOK_MARK, value);
 		close();
 	}
 	public List<Book> getBookList(Context context)
 	{	open(context);
 		bookList.clear();
-		String orderBy = Cloums.CREATE_DATE;
+		String orderBy = Cloums.UPDATE_DATE+" DESC ,"+Cloums.UPDATE_TIME+" DESC";
 		Cursor mCursor = query(Table.BOOK, null, orderBy);
 		while(mCursor.moveToNext())
 		{
@@ -222,7 +221,8 @@ public class BookData {
 	{   
 		open(context);
 		String Where = Cloums.BOOK_PATH +" = \""+ Path+"\"";
-		Cursor mCursor = query(Table.BOOK_MARK, Where, null);
+		String orderBy = Cloums.UPDATE_DATE+" DESC ,"+Cloums.UPDATE_TIME+" DESC";
+		Cursor mCursor = query(Table.BOOK_MARK, Where, orderBy);
 		BookMark mBookMark = null;
 		while(mCursor.moveToNext())
 		{
