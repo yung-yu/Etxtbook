@@ -1,0 +1,19 @@
+<resources>
+
+    <!--
+         Customize dimensions originally defined in res/values/dimens.xml (such as
+         screen margins) for sw600dp devices (e.g. 7" tablets) here.
+    -->
+      <dimen name="title_textsize">30dp</dimen>
+    <dimen name="desk_verticalSpacing">17.5dp</dimen>
+    <dimen name="desk_horizontalSpacing">17.5dp</dimen>
+    <dimen name="bookPage_magin">30dp</dimen>
+     <dimen name="file_text_size">45dp</dimen>
+    <dimen name="file_margin">20dp</dimen>
+    <dimen name="point_icon_widht_height">75dp</dimen>
+    <dimen name="bookName_textsize">24dp</dimen>
+    <dimen name="bookitem_width">135dp</dimen>
+    <dimen name="bookitem_height">150dp</dimen>
+      <dimen name="bookitem_padding_left">35dp</dimen>
+    <dimen name="bookitem_padding_right">20dp</dimen>
+</resources>

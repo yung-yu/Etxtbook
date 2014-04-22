@@ -1,0 +1,70 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@color/bg">
+
+    <GridView
+        android:id="@+id/desk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tableRow1"
+        android:numColumns="3"
+        android:scrollbars="none"
+        android:stretchMode="columnWidth" >
+
+    </GridView>
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imageButton1"
+                android:layout_toLeftOf="@+id/imageButton2"
+                android:layout_toRightOf="@+id/imageButton1"
+                android:background="@drawable/blackboard"
+                android:gravity="center"
+                android:text="@string/app_name"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/title_textsize" />
+
+            <View
+                android:id="@+id/view1"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/activity_vertical_margin"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/textView1"
+                android:background="@drawable/desk_top" />
+
+            <ImageView
+                android:id="@+id/imageButton1"
+                android:layout_width="@dimen/point_icon_widht_height"
+                android:layout_height="@dimen/point_icon_widht_height"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/search_file" />
+
+                 <ImageView
+                     android:id="@+id/imageButton2"
+                     android:layout_width="@dimen/point_icon_widht_height"
+                     android:layout_height="@dimen/point_icon_widht_height"
+                     android:layout_alignParentRight="true"
+                     android:layout_alignTop="@+id/imageButton1"
+                     android:scaleType="centerCrop"
+                     android:src="@drawable/garbage" />
+
+        </RelativeLayout>
+
+    </TableRow>
+
+</RelativeLayout>

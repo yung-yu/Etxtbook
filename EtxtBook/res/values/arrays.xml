@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="decoding">
+        <item>Big5</item>
+        <item>UTF-8</item>
+        <item>UTF-16</item>
+        <item>GB2312/GBK</item>
+        <item>GB2312</item>
+    </string-array>
+     <string-array name="decoding_value">
+        <item>big5</item>
+        <item>utf8</item>
+        <item>utf16</item>
+        <item>gbk</item>
+        <item>gb2312</item>
+    </string-array>
+    <string-array name="book_bg_select">
+        <item>預設</item>
+        <item>背景顏色</item>
+        <item>背景圖片</item>
+    </string-array>
+    <string-array name="clear_select">
+        <item>初始化狀態(包含文字大小和背景)</item>
+        <item>清空所有書本資料</item>
+    </string-array>
+</resources>

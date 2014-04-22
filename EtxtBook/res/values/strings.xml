@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">EtxtBook</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="book_text_size">字體大小</string>
+    <string name="book_text_color">文字顏色</string>
+    <string name="add_book_mark">加入書籤</string>
+    <string name="select_book_amrk">選取書籤</string>
+    <string name="book_bg">背景</string>
+    <string name="text_decoding">文字編碼</string>
+    <string name="alert_ok">確認</string>
+    <string name="alert_cancel">取消</string>
+    <string name="alert_tip_delete">是否要刪除?</string>
+    <string name="alert_title_txtcolor">選取文字顏色</string>
+    <string name="alert_title_txtsize">文字大小</string>
+    <string name="alert_title_pgbg">選擇背景樣式</string>
+    <string name="alert_title_pgbgcolor">選擇背景顏色</string>
+    <string name="alert_title_encode">選擇文字編碼</string>
+    <string name="alert_title_clear">資源回收</string>
+    <string name="file_not_exist">找不到檔案!</string>
+    <string name="addbook">新增  &#038;s 到書櫃!</string>
+    <string name="added"> &#038;s 已加到書櫃!</string>
+    <string name="easy_read">輕鬆閱讀</string>
+</resources>
