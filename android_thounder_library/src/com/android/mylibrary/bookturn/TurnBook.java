@@ -14,6 +14,15 @@ public class TurnBook extends PageWidget{
 	Canvas mCurPageCanvas, mNextPageCanvas;
 	BookPageFactory pagefactory;
 	Context parent;
+	onBookChangeListener sonBookChangeListener;
+	public void setOnBookChangeListener(onBookChangeListener sonBookChangeListener) {
+		this.sonBookChangeListener = sonBookChangeListener;
+	}
+	public interface onBookChangeListener{
+		   void onBookChange(String Prcent);
+		   void onFirstIndex();
+		   void onFinalIndex();
+	}
 	public TurnBook(Context context,int width,int height,int maginW,int maginh) {
 		super(context);
 		// TODO Auto-generated constructor stub
@@ -51,8 +60,14 @@ public class TurnBook extends PageWidget{
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}						
-							if(pagefactory.isfirstPage())return false;
+							if(pagefactory.isfirstPage()){
+								if(sonBookChangeListener!=null)
+									sonBookChangeListener.onFirstIndex();
+								return false;
+							}
 							pagefactory.onDraw(mNextPageCanvas);
+							if(sonBookChangeListener!=null)
+								sonBookChangeListener.onBookChange( pagefactory.getStrPercent());
 						} else {
 							try {
 								//false，顯示下一頁							
@@ -61,8 +76,14 @@ public class TurnBook extends PageWidget{
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
-							if(pagefactory.islastPage())return false;
+							if(pagefactory.islastPage()){
+								if(sonBookChangeListener!=null)
+									sonBookChangeListener.onFinalIndex();
+								return false;
+							}
 							pagefactory.onDraw(mNextPageCanvas);
+							if(sonBookChangeListener!=null)
+								sonBookChangeListener.onBookChange( pagefactory.getStrPercent());
 						}
 						setBitmaps(mCurPageBitmap, mNextPageBitmap);
 					}
@@ -76,12 +97,17 @@ public class TurnBook extends PageWidget{
 		});
 	}
 	public boolean prePage(){	
-		if(pagefactory.isfirstPage())return false;
+		if(pagefactory.isfirstPage()){
+			if(sonBookChangeListener!=null)
+				sonBookChangeListener.onFirstIndex();
+			return false;
+		}
 			//是否從左邊翻向右邊		
 		  
 			try {
 				//true，顯示上一頁					
 				pagefactory.prePage();
+				
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -89,21 +115,29 @@ public class TurnBook extends PageWidget{
 			pagefactory.onDraw(mCurPageCanvas);
 			setBitmaps(mCurPageBitmap, mCurPageBitmap);
 			  postInvalidate();
+			  if(sonBookChangeListener!=null)
+					sonBookChangeListener.onBookChange( pagefactory.getStrPercent());
 			  return true;
 	}
 	public boolean NextPage(){	 		  
-		if(pagefactory.islastPage())return false; 
-			try {
-				//false，顯示下一頁							
-				pagefactory.nextPage();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			pagefactory.onDraw(mCurPageCanvas);
-			setBitmaps(mCurPageBitmap, mCurPageBitmap);
-        postInvalidate();
-        return true;
+		if(pagefactory.islastPage()){
+			if(sonBookChangeListener!=null)
+				sonBookChangeListener.onFinalIndex();
+			return false; 
+		}
+		try {
+			//false，顯示下一頁							
+			pagefactory.nextPage();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		pagefactory.onDraw(mCurPageCanvas);
+		setBitmaps(mCurPageBitmap, mCurPageBitmap);	
+		postInvalidate();
+		if(sonBookChangeListener!=null)
+			sonBookChangeListener.onBookChange( pagefactory.getStrPercent());
+		return true;
 	}
 	/**書頁背景*/
    public void setBookBackgroundBitmap(Bitmap bmp){
@@ -130,6 +164,8 @@ public class TurnBook extends PageWidget{
            pagefactory.onDraw(mCurPageCanvas);  
            pagefactory.onDraw(mNextPageCanvas);
            postInvalidate();
+           if(sonBookChangeListener!=null)
+    			sonBookChangeListener.onBookChange( pagefactory.getStrPercent());
 	   }
    }
    /**設定自體大小*/
@@ -180,8 +216,8 @@ public class TurnBook extends PageWidget{
 	      int begin1 = pagefactory.getM_mbBufBegin();  
           pagefactory.setM_mbBufEnd(begin1);  
           pagefactory.getM_lines().clear();  
-          pagefactory.onDraw(mCurPageCanvas);//  
-          pagefactory.onDraw(mNextPageCanvas);//  
+          pagefactory.onDraw(mCurPageCanvas); 
+          pagefactory.onDraw(mNextPageCanvas);  
           postInvalidate();
 	   }
    }
