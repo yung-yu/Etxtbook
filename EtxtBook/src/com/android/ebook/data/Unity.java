@@ -10,10 +10,8 @@ public class Unity {
 	 public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	 private static final int BaseYear = 2014;
      @SuppressWarnings("static-access")
-
     public static int getDate2Int(int year, int month, int day)
  	{
- 		
  		int date = ((year - BaseYear) << 9) + (month << 5) + day;
  		return date;
  	}

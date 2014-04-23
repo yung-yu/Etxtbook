@@ -405,6 +405,7 @@ public class BookPageFactory{
 	public void setM_textColor(int m_textColor) {
 		this.m_textColor = m_textColor;
 		mPaint.setColor(m_textColor);
+		mPaint_formsg.setColor(m_textColor);
 	}	
 	public int  getM_textColor() {
 		return m_textColor;
