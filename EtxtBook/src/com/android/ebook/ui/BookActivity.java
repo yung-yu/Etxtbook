@@ -3,6 +3,7 @@ package com.android.ebook.ui;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
+import net.margaritov.preference.colorpicker.ColorPickerDialog;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 import com.android.ebook.R;
@@ -42,6 +43,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -68,6 +70,8 @@ public class BookActivity extends Activity{
 	ImageLoader mImageLoader;
 	boolean isTable=false;
     String bookname;
+    Toast mToast;
+    View DecorView;
  	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +93,6 @@ public class BookActivity extends Activity{
         mBookData = new BookData(this);
         decode_array = parent.getResources().getStringArray(R.array.decoding_value);	    
 	    int magin = (int) getResources().getDimension(R.dimen.bookPage_magin);
-	    Log.d("book",dm.widthPixels+":"+dm.heightPixels);
 	    mTurnBook = new TurnBook(this, dm.widthPixels, dm.heightPixels,magin,magin);	
 	    setContentView(mTurnBook);
 	    mTurnBook.setVisibility(View.INVISIBLE);
@@ -108,7 +111,8 @@ public class BookActivity extends Activity{
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						 mTurnBook.setVisibility(View.VISIBLE);
+						mTurnBook.setVisibility(View.VISIBLE);
+
 					}
 				});  
 			}
@@ -147,8 +151,38 @@ public class BookActivity extends Activity{
 	public void initBook(){
 		setBookBg();
 		mTurnBook.setBookFile(filePath, false);
-		if(isTable)
+		if(isTable){
 			mTurnBook.getBookPageFactory().setDelay_lineCount(3);
+		}
+		mTurnBook.setOnBookChangeListener(new TurnBook.onBookChangeListener() {
+			
+			@Override
+			public void onFirstIndex() {
+				// TODO Auto-generated method stub			   
+			   Toast.makeText(parent, getString(R.string.book_start), Toast.LENGTH_SHORT).show();
+
+			}
+			
+			@Override
+			public void onFinalIndex() {
+				// TODO Auto-generated method stub
+				Toast.makeText(parent, getString(R.string.book_end), Toast.LENGTH_SHORT).show();
+			}
+			
+			@Override
+			public void onBookChange(final String Prcent) {
+				// TODO Auto-generated method stub
+					runOnUiThread(new Runnable() {
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							setTitle(Prcent +"  "+bookname);
+						}
+					});
+			}
+		});
+		mTurnBook.getBookPageFactory().setIsShowMsg(true);
 		mTurnBook.getBookPageFactory().setBookName(bookname);
 		mTurnBook.getBookPageFactory().setM_fontSize_forMsg(getResources().getDimension(R.dimen.txt_msg_textsize));
 		mTurnBook.setTextSize(sharePerferenceHelper.getIntent(this).getInt(BOOK_TEXT_SIZE, 30));
@@ -273,7 +307,6 @@ public class BookActivity extends Activity{
 			break;
 		case R.id.item6:
 			showChangeBgDialog();
-            
 			break;
 		default:
 			break;
@@ -327,7 +360,7 @@ public class BookActivity extends Activity{
 	  }
 		return super.dispatchKeyEvent(event);
 	}
-  
+
    public void showChangeBgDialog(){
 		int type = sharePerferenceHelper.getIntent(this).getInt(BOOK_BG_TYPE, 0);
 	   AlertDialog.Builder ab = new AlertDialog.Builder( this);
@@ -396,45 +429,74 @@ public class BookActivity extends Activity{
   public void showbookbgColorDialog(){
 	  
 	  int color = sharePerferenceHelper.getIntent(parent).getInt(BOOK_BG_COLOR,Color.WHITE);
-	  AmbilWarnaDialog mAmbilWarnaDialog = new AmbilWarnaDialog(this,color, new AmbilWarnaDialog.OnAmbilWarnaListener() {
-		
-		@Override
-		public void onOk(AmbilWarnaDialog dialog, int color) {
-			// TODO Auto-generated method stub
-			 sharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_TYPE,1);
-			 sharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_COLOR,color);
-			  setBookBg();
-			  mTurnBook.refreach();
-		}
-		
-		@Override
-		public void onCancel(AmbilWarnaDialog dialog) {
-			// TODO Auto-generated method stub
-			
-		}
-	} );
-	  mAmbilWarnaDialog.getDialog().setTitle(R.string.alert_title_pgbgcolor);
-	  mAmbilWarnaDialog.show();
+	  ColorPickerDialog mColorPickerDialog = new ColorPickerDialog(this,color);
+	  mColorPickerDialog.setTitle(R.string.alert_title_pgbgcolor);
+	  mColorPickerDialog.setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
+
+		  @Override
+		  public void onColorChanged(int color) {
+			  // TODO Auto-generated method stub
+				 sharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_TYPE,1);
+				 sharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_COLOR,color);
+				  setBookBg();
+				  mTurnBook.refreach();
+		  }
+	  });
+	  mColorPickerDialog.setAlphaSliderVisible(true);
+	  mColorPickerDialog.show();
+//	  AmbilWarnaDialog mAmbilWarnaDialog = new AmbilWarnaDialog(this,color, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+//		
+//		@Override
+//		public void onOk(AmbilWarnaDialog dialog, int color) {
+//			// TODO Auto-generated method stub
+//			 sharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_TYPE,1);
+//			 sharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_COLOR,color);
+//			  setBookBg();
+//			  mTurnBook.refreach();
+//		}
+//		
+//		@Override
+//		public void onCancel(AmbilWarnaDialog dialog) {
+//			// TODO Auto-generated method stub
+//			
+//		}
+//	} );
+//	  mAmbilWarnaDialog.getDialog().setTitle(R.string.alert_title_pgbgcolor);
+//	  mAmbilWarnaDialog.show();
   }
 public void showTextColorDialog(){
-	  AmbilWarnaDialog mAmbilWarnaDialog = new AmbilWarnaDialog(this,mTurnBook.getTextColor(), new AmbilWarnaDialog.OnAmbilWarnaListener() {
-		
-		@Override
-		public void onOk(AmbilWarnaDialog dialog, int color) {
-			// TODO Auto-generated method stub
-			mTurnBook.setTextColor(color);
-			mTurnBook.refreach();
-			sharePerferenceHelper.getIntent(parent).setInt(BOOK_TEXT_COLOR, color);
-		}
-		
-		@Override
-		public void onCancel(AmbilWarnaDialog dialog) {
-			// TODO Auto-generated method stub
-			
-		}
-	} );
-	  mAmbilWarnaDialog.getDialog().setTitle(R.string.alert_title_txtcolor);
-	  mAmbilWarnaDialog.show();
+	  ColorPickerDialog mColorPickerDialog = new ColorPickerDialog(this,mTurnBook.getTextColor());
+	  mColorPickerDialog.setTitle(R.string.alert_title_txtcolor);
+	  mColorPickerDialog.setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
+
+		  @Override
+		  public void onColorChanged(int color) {
+			  // TODO Auto-generated method stub
+				mTurnBook.setTextColor(color);
+				mTurnBook.refreach();
+				sharePerferenceHelper.getIntent(parent).setInt(BOOK_TEXT_COLOR, color);
+		  }
+	  });
+	  mColorPickerDialog.setAlphaSliderVisible(true);
+	  mColorPickerDialog.show();
+//	  AmbilWarnaDialog mAmbilWarnaDialog = new AmbilWarnaDialog(this,mTurnBook.getTextColor(), new AmbilWarnaDialog.OnAmbilWarnaListener() {
+//		
+//		@Override
+//		public void onOk(AmbilWarnaDialog dialog, int color) {
+//			// TODO Auto-generated method stub
+//			mTurnBook.setTextColor(color);
+//			mTurnBook.refreach();
+//			sharePerferenceHelper.getIntent(parent).setInt(BOOK_TEXT_COLOR, color);
+//		}
+//		
+//		@Override
+//		public void onCancel(AmbilWarnaDialog dialog) {
+//			// TODO Auto-generated method stub
+//			
+//		}
+//	} );
+//	  mAmbilWarnaDialog.getDialog().setTitle(R.string.alert_title_txtcolor);
+//	  mAmbilWarnaDialog.show();
   }
   public void showDefineTextSizeDilog(){
 		LayoutInflater inflater=(LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);

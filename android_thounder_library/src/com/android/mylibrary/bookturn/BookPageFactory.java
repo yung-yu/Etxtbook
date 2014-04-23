@@ -52,6 +52,10 @@ public class BookPageFactory{
 	private Paint mPaint;
 	private Paint mPaint_formsg;
 	private String BookName = "";
+	private Boolean isShowMsg = false;
+	public void setIsShowMsg(Boolean isShowMsg) {
+		this.isShowMsg = isShowMsg;
+	}
 	public BookPageFactory(int w, int h,int marginWidth,int marginHeight) {
 		// TODO Auto-generated constructor stub
 		mWidth = w;
@@ -219,12 +223,12 @@ public class BookPageFactory{
 			m_mbBufEnd += paraBuf.length;//結束位置後移paraBuf.length
 			try {
 				strParagraph = new String(paraBuf, m_strCharsetName);//通過decode指定的編碼格式將byte[]轉換為字符串			
-				} catch (UnsupportedEncodingException e) {
+			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			String strReturn = "";
-			
+
 			//去除將字符串中的特殊字符
 			if (strParagraph.indexOf("\r\n") != -1) {
 				strReturn = "\r\n";
@@ -251,8 +255,7 @@ public class BookPageFactory{
 			//當前頁沒顯示完
 			if (strParagraph.length() != 0) {
 				try {
-					m_mbBufEnd -= (strParagraph + strReturn)
-							.getBytes(m_strCharsetName).length;
+					m_mbBufEnd -= (strParagraph + strReturn).getBytes(m_strCharsetName).length;
 				} catch (UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -349,19 +352,22 @@ public class BookPageFactory{
 		float fPercent = (float) (m_mbBufBegin * 1.0 / m_mbBufLen);
 		DecimalFormat df = new DecimalFormat("#0.0");
 	    strPercent = df.format(fPercent * 100) + "%";
-	    mPaint_formsg.setTextSize(m_fontSize_forMsg);
-		//計算999.9%所占的像素寬度	
-		int nPercentWidth = (int) mPaint.measureText(strPercent) + 1;
-		mPaint_formsg.setTextAlign(Align.RIGHT);
-		 int th = (int) (mPaint_formsg.descent() - mPaint_formsg.ascent());
-		c.drawText(strPercent, mWidth, mHeight-marginHeight-th , mPaint_formsg);
-		mPaint_formsg.setTextAlign(Align.LEFT);
-		int size=mPaint_formsg.breakText(BookName, true, mWidth-nPercentWidth,null);
-		if(size<BookName.length())
-			BookName = BookName.substring(0,size);
-		c.drawText(BookName, 0,mHeight-marginHeight-th, mPaint_formsg);
+		if(isShowMsg)
+		{
+			mPaint_formsg.setTextSize(m_fontSize_forMsg);
+			//計算999.9%所占的像素寬度	
+			int nPercentWidth = (int) mPaint.measureText(strPercent) + 1;
+			mPaint_formsg.setTextAlign(Align.RIGHT);
+			int th = (int) (mPaint_formsg.descent() - mPaint_formsg.ascent());
+			float msg_y = mHeight-marginHeight-th;
+			c.drawText(strPercent, mWidth, msg_y , mPaint_formsg);
+			mPaint_formsg.setTextAlign(Align.LEFT);
+			int size=mPaint_formsg.breakText(BookName, true, mWidth-nPercentWidth,null);
+			if(size<BookName.length())
+				BookName = BookName.substring(0,size);
+			c.drawText(BookName, 0,msg_y, mPaint_formsg);
+		}
 	}
-
 	public void setBookName(String bookName) {
 		BookName = bookName;
 	}

@@ -23,4 +23,7 @@
     <string name="addbook">新增  &#038;s 到書櫃!</string>
     <string name="added"> &#038;s 已加到書櫃!</string>
     <string name="easy_read">輕鬆閱讀</string>
+    <string name="book_start">世界的起跑點!</string>
+    <string name="book_end">精彩內容已結束!</string>
+
 </resources>
