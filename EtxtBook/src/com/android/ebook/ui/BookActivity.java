@@ -2,18 +2,8 @@ package com.android.ebook.ui;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
-
 import net.margaritov.preference.colorpicker.ColorPickerDialog;
-import net.margaritov.preference.colorpicker.ColorPickerView;
-import yuku.ambilwarna.AmbilWarnaDialog;
-
 import com.android.ebook.R;
-import com.android.ebook.R.array;
-import com.android.ebook.R.dimen;
-import com.android.ebook.R.id;
-import com.android.ebook.R.layout;
-import com.android.ebook.R.menu;
-import com.android.ebook.R.string;
 import com.android.ebook.data.BookData;
 import com.android.ebook.data.BookMark;
 import com.android.ebook.data.Unity;
@@ -22,8 +12,6 @@ import com.android.mylibrary.bookturn.TurnBook;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
-
-
 import android.R.color;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -310,9 +298,6 @@ public class BookActivity extends Activity{
 		case R.id.item1:
 			showDecodeDialog();
 			break;
-		case R.id.item2:
-			showBookPercentDilog();
-			break;
 		case R.id.item3:
 			showDefineTextSizeDilog();
 			break;
@@ -475,67 +460,7 @@ public class BookActivity extends Activity{
 	  mColorPickerDialog.setAlphaSliderVisible(true);
 	  mColorPickerDialog.show();
   }
-  public void showBookPercentDilog(){
-	  LayoutInflater inflater=(LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	  View vi=inflater.inflate(R.layout.booktextsizecontrol, null);
-	  final SeekBar mSeekBar =(SeekBar)vi.findViewById(R.id.sb);
-	  final TextView et1 = (TextView)vi.findViewById(R.id.et1);
-	  AlertDialog.Builder ab = new AlertDialog.Builder(this);
-	  ab.setTitle(R.string.alert_title_txtsize);
-	  mSeekBar.setMax(9999);
-	  final DecimalFormat df = new DecimalFormat("00.00"); 
-	  float orignize_Percent = getBookPercent();
-	  String   valStr = df.format(getBookPercent());
-	  et1.setText(valStr);
-	  mSeekBar.setProgress((int) (getBookPercent()*100));
-	  mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
-		  @Override
-		  public void onStopTrackingTouch(SeekBar seekBar) {
-			  // TODO Auto-generated method stub
-
-		  }
-
-		  @Override
-		  public void onStartTrackingTouch(SeekBar seekBar) {
-			  // TODO Auto-generated method stub
-
-		  }
-
-		  @Override
-		  public void onProgressChanged(SeekBar seekBar, int progress,
-				  boolean fromUser) {
-			  // TODO Auto-generated method stub
-			  setBookPercent(Float.valueOf(progress)/100f);
-			  String valStr = df.format(getBookPercent());
-			  et1.setText(valStr);
-		
-
-		  }
-	  });
-
-	  ab.setView(vi);
-	  ab.setNegativeButton(R.string.alert_ok, new DialogInterface.OnClickListener() {
-
-		  @Override
-		  public void onClick(DialogInterface dialog,int which) {
-			  // TODO Auto-generated method stub	  
-			  mTurnBook.setPercentToPage(getBookPercent());
-			  dialog.cancel();
-		  }
-	  });
-	  ab.setPositiveButton(R.string.alert_cancel, new DialogInterface.OnClickListener(){
-
-		  @Override
-		  public void onClick(DialogInterface dialog, int which) {
-			  // TODO Auto-generated method stub
-			  dialog.cancel();
-		  }
-
-	  });
-	  AlertDialog ad = ab.create();
-	  ad.show();
-  }
   public void showDefineTextSizeDilog(){
 		LayoutInflater inflater=(LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View vi=inflater.inflate(R.layout.booktextsizecontrol, null);

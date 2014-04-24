@@ -5,6 +5,7 @@ import java.io.IOException;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -103,7 +104,6 @@ public class TurnBook extends PageWidget{
 			return false;
 		}
 			//是否從左邊翻向右邊		
-		  
 			try {
 				//true，顯示上一頁					
 				pagefactory.prePage();
@@ -144,10 +144,14 @@ public class TurnBook extends PageWidget{
 	 * @param Percent
 	 */
 	public void setPercentToPage(float Percent){
-		int new_BufBegin = (int) (pagefactory.getM_mbBufLen()*Percent);
-		if(new_BufBegin>=pagefactory.getM_mbBufEnd()||new_BufBegin<=pagefactory.getM_mbBufBegin()){
-			ToBookMarkPage(new_BufBegin);
-		}		
+           Log.d("book","Percent :"+Percent);
+  
+            float beginPercent  = pagefactory.getM_mbBufBegin()/pagefactory.getM_mbBufLen();
+            float endPercent  = pagefactory.getM_mbBufEnd()/pagefactory.getM_mbBufLen();
+            Log.d("book","Percent :"+Percent);
+            Log.d("book","beginPercent :"+beginPercent);
+            Log.d("book","endPercent :"+endPercent);
+		
 	}
 	/**書頁背景*/
    public void setBookBackgroundBitmap(Bitmap bmp){
