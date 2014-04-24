@@ -305,7 +305,6 @@ public class BookPageFactory{
 		m_mbBufEnd = m_mbBufBegin;
 		return;
 	}
-
 	public void prePage() throws IOException {
 		if (m_mbBufBegin <= 0) {
 			//²Ä¤@­¶
