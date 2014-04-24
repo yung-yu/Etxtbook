@@ -66,7 +66,7 @@ public class BookData {
 						Cloums.BOOK_PATH + " TEXT ,"+
 						Cloums.BOOK_TAG + " INTEGER ,"+
 						Cloums.BOOK_TAG_TEXT + " TEXT ,"+
-						Cloums.BOOK_TAG_PERCENT + " TEXT ,"+
+						Cloums.BOOK_TAG_PERCENT + " FLOAT ,"+
 						Cloums.UPDATE_DATE + " INTEGER,"+
 						Cloums.UPDATE_TIME + " INTEGER"+
 						" )";
@@ -231,7 +231,7 @@ public class BookData {
 			    mBookMark = new BookMark();
 				mBookMark.setBegin(mCursor.getInt(CloumsIndex.BOOK_TAG));
 				mBookMark.setContent(mCursor.getString(CloumsIndex.BOOK_TAG_TEXT));
-				mBookMark.setPercent(mCursor.getString(CloumsIndex.BOOK_TAG_PERCENT));
+				mBookMark.setPercent(mCursor.getInt(CloumsIndex.BOOK_TAG_PERCENT));
 				mBookMark.setUpdate_date(mCursor.getInt(CloumsIndex.UPDATE_DATE));
 				break;
 			}

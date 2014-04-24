@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.Calendar;
 
 import net.margaritov.preference.colorpicker.ColorPickerDialog;
+import net.margaritov.preference.colorpicker.ColorPickerView;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 import com.android.ebook.R;
@@ -21,6 +22,7 @@ import com.android.mylibrary.bookturn.TurnBook;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
+
 
 import android.R.color;
 import android.annotation.TargetApi;
@@ -65,6 +67,7 @@ public class BookActivity extends Activity{
     int encode ;
 	String[] decode_array ;
 	BookMark mBookMark;
+	float percent = 0f;
 	DisplayMetrics dm ;
 	Bitmap myBitmap;
 	ImageLoader mImageLoader;
@@ -103,7 +106,7 @@ public class BookActivity extends Activity{
 				// TODO Auto-generated method stub
 				initBook();
 				if(mBookMark!=null)
-					mTurnBook.ToBookMarkPosition(mBookMark.getBegin());	
+					mTurnBook.ToBookMarkPage(mBookMark.getBegin());	
 				else
 					mTurnBook.refreach();
 				runOnUiThread(new Runnable() {
@@ -119,7 +122,7 @@ public class BookActivity extends Activity{
 		}).start();
 	
 	}
-   @Override
+    @Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
@@ -148,6 +151,7 @@ public class BookActivity extends Activity{
 		if(mTurnBook != null)
 			mTurnBook.recycle();
 	}
+	
 	public void initBook(){
 		setBookBg();
 		mTurnBook.setBookFile(filePath, false);
@@ -189,6 +193,8 @@ public class BookActivity extends Activity{
 		mTurnBook.setTextColor(sharePerferenceHelper.getIntent(this).getInt(BOOK_TEXT_COLOR, Color.BLACK));
 		encode = mBookData.getBookEncode(parent,filePath);
 		mBookMark = mBookData.getBookMark(parent,filePath);
+		if(mBookMark != null)
+			setBookPercent(mBookMark.getPercent());
 		mTurnBook.setDecoding(decode_array[encode]);
 	}
 	public void initImageLoader(){
@@ -200,14 +206,20 @@ public class BookActivity extends Activity{
         mImageLoader.init(config);
        
 	}
+	public void setBookPercent(float percent){
+		this.percent = percent;
+	}
+	public float getBookPercent(){
+		return percent;
+	}
 	public void setBookBg(){
 		if(mTurnBook == null)
 			return;
 		int type = sharePerferenceHelper.getIntent(this).getInt(BOOK_BG_TYPE, 0);
 		switch (type) {
 		case 0:
-		mTurnBook.setBookBackgroundBitmap(null);
-		mTurnBook.getBookPageFactory().setM_backColor(getResources().getColor(R.color.bg));
+			mTurnBook.setBookBackgroundBitmap(null);
+			mTurnBook.getBookPageFactory().setM_backColor(getResources().getColor(R.color.bg));
 			break;
 		case 1:
 			int bg_color = sharePerferenceHelper.getIntent(this).getInt(BOOK_BG_COLOR,color.white);
@@ -230,21 +242,20 @@ public class BookActivity extends Activity{
 		default:
 			break;
 		}
-		
+
 	}
 	public void addBookTag(){
 		int newbegin = mTurnBook.getBookPageFactory().getM_mbBufBegin();
 		if(mBookMark == null)
 		{
-			
 			mBookMark = new BookMark();
 			mBookMark.setBegin(newbegin);
 			String content = "";
 			for(String s:mTurnBook.getBookPageFactory().getM_lines())
 				content += s;
 			mBookMark.setContent(content);
-			mBookMark.setPercent(mTurnBook.getBookPageFactory().getStrPercent());
-			  Calendar c = Calendar.getInstance();
+			mBookMark.setPercent(mTurnBook.getBookPageFactory().getfPercent());
+			Calendar c = Calendar.getInstance();
 			mBookMark.setUpdate_date(Unity.getCurDate(c));
 			mBookMark.setUpdate_time(Unity.getCurTime(c));
 			mBookData.addBookTag(parent,mBookMark,filePath);
@@ -258,7 +269,7 @@ public class BookActivity extends Activity{
 			for(String s:mTurnBook.getBookPageFactory().getM_lines())
 				content += s;
 			mBookMark.setContent(content);
-			mBookMark.setPercent(mTurnBook.getBookPageFactory().getStrPercent());
+			mBookMark.setPercent(mTurnBook.getBookPageFactory().getfPercent());
 			Calendar c = Calendar.getInstance();
 			mBookMark.setUpdate_date(Unity.getCurDate(c));
 			mBookMark.setUpdate_time(Unity.getCurTime(c));
@@ -296,16 +307,19 @@ public class BookActivity extends Activity{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
 		switch (item.getItemId()) {
-		case R.id.item3:
+		case R.id.item1:
 			showDecodeDialog();
 			break;
-		case R.id.item4:
+		case R.id.item2:
+			showBookPercentDilog();
+			break;
+		case R.id.item3:
 			showDefineTextSizeDilog();
 			break;
-		case R.id.item5:
+		case R.id.item4:
 			showTextColorDialog();
 			break;
-		case R.id.item6:
+		case R.id.item5:
 			showChangeBgDialog();
 			break;
 		default:
@@ -444,27 +458,8 @@ public class BookActivity extends Activity{
 	  });
 	  mColorPickerDialog.setAlphaSliderVisible(true);
 	  mColorPickerDialog.show();
-//	  AmbilWarnaDialog mAmbilWarnaDialog = new AmbilWarnaDialog(this,color, new AmbilWarnaDialog.OnAmbilWarnaListener() {
-//		
-//		@Override
-//		public void onOk(AmbilWarnaDialog dialog, int color) {
-//			// TODO Auto-generated method stub
-//			 sharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_TYPE,1);
-//			 sharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_COLOR,color);
-//			  setBookBg();
-//			  mTurnBook.refreach();
-//		}
-//		
-//		@Override
-//		public void onCancel(AmbilWarnaDialog dialog) {
-//			// TODO Auto-generated method stub
-//			
-//		}
-//	} );
-//	  mAmbilWarnaDialog.getDialog().setTitle(R.string.alert_title_pgbgcolor);
-//	  mAmbilWarnaDialog.show();
   }
-public void showTextColorDialog(){
+  public void showTextColorDialog(){
 	  ColorPickerDialog mColorPickerDialog = new ColorPickerDialog(this,mTurnBook.getTextColor());
 	  mColorPickerDialog.setTitle(R.string.alert_title_txtcolor);
 	  mColorPickerDialog.setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
@@ -479,24 +474,67 @@ public void showTextColorDialog(){
 	  });
 	  mColorPickerDialog.setAlphaSliderVisible(true);
 	  mColorPickerDialog.show();
-//	  AmbilWarnaDialog mAmbilWarnaDialog = new AmbilWarnaDialog(this,mTurnBook.getTextColor(), new AmbilWarnaDialog.OnAmbilWarnaListener() {
-//		
-//		@Override
-//		public void onOk(AmbilWarnaDialog dialog, int color) {
-//			// TODO Auto-generated method stub
-//			mTurnBook.setTextColor(color);
-//			mTurnBook.refreach();
-//			sharePerferenceHelper.getIntent(parent).setInt(BOOK_TEXT_COLOR, color);
-//		}
-//		
-//		@Override
-//		public void onCancel(AmbilWarnaDialog dialog) {
-//			// TODO Auto-generated method stub
-//			
-//		}
-//	} );
-//	  mAmbilWarnaDialog.getDialog().setTitle(R.string.alert_title_txtcolor);
-//	  mAmbilWarnaDialog.show();
+  }
+  public void showBookPercentDilog(){
+	  LayoutInflater inflater=(LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	  View vi=inflater.inflate(R.layout.booktextsizecontrol, null);
+	  final SeekBar mSeekBar =(SeekBar)vi.findViewById(R.id.sb);
+	  final TextView et1 = (TextView)vi.findViewById(R.id.et1);
+	  AlertDialog.Builder ab = new AlertDialog.Builder(this);
+	  ab.setTitle(R.string.alert_title_txtsize);
+	  mSeekBar.setMax(9999);
+	  final DecimalFormat df = new DecimalFormat("00.00"); 
+	  float orignize_Percent = getBookPercent();
+	  String   valStr = df.format(getBookPercent());
+	  et1.setText(valStr);
+	  mSeekBar.setProgress((int) (getBookPercent()*100));
+	  mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+		  @Override
+		  public void onStopTrackingTouch(SeekBar seekBar) {
+			  // TODO Auto-generated method stub
+
+		  }
+
+		  @Override
+		  public void onStartTrackingTouch(SeekBar seekBar) {
+			  // TODO Auto-generated method stub
+
+		  }
+
+		  @Override
+		  public void onProgressChanged(SeekBar seekBar, int progress,
+				  boolean fromUser) {
+			  // TODO Auto-generated method stub
+			  setBookPercent(Float.valueOf(progress)/100f);
+			  String valStr = df.format(getBookPercent());
+			  et1.setText(valStr);
+		
+
+		  }
+	  });
+
+	  ab.setView(vi);
+	  ab.setNegativeButton(R.string.alert_ok, new DialogInterface.OnClickListener() {
+
+		  @Override
+		  public void onClick(DialogInterface dialog,int which) {
+			  // TODO Auto-generated method stub	  
+			  mTurnBook.setPercentToPage(getBookPercent());
+			  dialog.cancel();
+		  }
+	  });
+	  ab.setPositiveButton(R.string.alert_cancel, new DialogInterface.OnClickListener(){
+
+		  @Override
+		  public void onClick(DialogInterface dialog, int which) {
+			  // TODO Auto-generated method stub
+			  dialog.cancel();
+		  }
+
+	  });
+	  AlertDialog ad = ab.create();
+	  ad.show();
   }
   public void showDefineTextSizeDilog(){
 		LayoutInflater inflater=(LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);

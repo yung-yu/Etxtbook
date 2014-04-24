@@ -3,7 +3,7 @@ package com.android.ebook.data;
 public class BookMark {
     private  int begin;
     private  String content;
-    private  String Percent;
+    private  float Percent;
     private  int update_date;
     private  int update_time;
 	public int getUpdate_time() {
@@ -18,10 +18,10 @@ public class BookMark {
 	public String getContent() {
 		return content;
 	}
-	public String getPercent() {
+	public float getPercent() {
 		return Percent;
 	}
-	public void setPercent(String percent) {
+	public void setPercent(float percent) {
 		Percent = percent;
 	}
 	public int getBegin() {

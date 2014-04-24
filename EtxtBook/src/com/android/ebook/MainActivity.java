@@ -12,7 +12,6 @@ import com.android.ebook.data.sharePerferenceHelper;
 import com.android.ebook.ui.BookActivity;
 import com.android.mylibrary.filebrowser.FileItem;
 import com.android.mylibrary.filebrowser.fileChooser;
-
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 import android.os.Bundle;
@@ -188,7 +187,7 @@ public class MainActivity extends Activity {
 				
 			}
 		});
-		mfileChooser.init(Environment.getExternalStorageDirectory());
+	
 		bt_back.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -197,7 +196,7 @@ public class MainActivity extends Activity {
 				mfileChooser.Back();
 			}
 		});
-	
+		  mfileChooser.init(Environment.getExternalStorageDirectory());
 	}
 	@Override
 	protected void onResume() {
@@ -207,7 +206,8 @@ public class MainActivity extends Activity {
 				
 				@Override
 				public void run() {
-					// TODO Auto-generated method stub
+					// TODO Auto-generated method stub	
+
 				  booklist.clear();
 				  booklist.addAll(mBookData.getBookList(context));
 				runOnUiThread( new Runnable() {

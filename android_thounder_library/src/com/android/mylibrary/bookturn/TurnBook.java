@@ -139,6 +139,16 @@ public class TurnBook extends PageWidget{
 			sonBookChangeListener.onBookChange( pagefactory.getStrPercent());
 		return true;
 	}
+	/**
+	 * %數轉換成小數再帶入
+	 * @param Percent
+	 */
+	public void setPercentToPage(float Percent){
+		int new_BufBegin = (int) (pagefactory.getM_mbBufLen()*Percent);
+		if(new_BufBegin>=pagefactory.getM_mbBufEnd()||new_BufBegin<=pagefactory.getM_mbBufBegin()){
+			ToBookMarkPage(new_BufBegin);
+		}		
+	}
 	/**書頁背景*/
    public void setBookBackgroundBitmap(Bitmap bmp){
 	   if(pagefactory!=null)
@@ -155,7 +165,7 @@ public class TurnBook extends PageWidget{
 	   }
    }
    /**插入書籤*/
-   public void ToBookMarkPosition(int beginIndex){
+   public void ToBookMarkPage(int beginIndex){
 	   if(pagefactory!=null)
 	   {
 		   pagefactory.setM_mbBufEnd(beginIndex);  
