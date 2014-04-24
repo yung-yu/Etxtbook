@@ -53,6 +53,7 @@ public class BookPageFactory{
 	private Paint mPaint_formsg;
 	private String BookName = "";
 	private Boolean isShowMsg = false;
+	float fPercent = 0.0f;
 	public void setIsShowMsg(Boolean isShowMsg) {
 		this.isShowMsg = isShowMsg;
 	}
@@ -69,8 +70,6 @@ public class BookPageFactory{
 		mPaint_formsg.setColor(m_textColor);
 		setM_fontSize_forMsg(30);
 		setM_fontSize(30);// 可顯示的行數
-	
-	
 	}
 	
 	public void openBook(Context context,String fileName){
@@ -328,7 +327,6 @@ public class BookPageFactory{
 		m_mbBufBegin = m_mbBufEnd;
 		m_lines = pageDown();
 	}
-
 	@SuppressLint("DrawAllocation")
 	public void onDraw(Canvas c) {
 		if (m_lines.size() == 0)
@@ -349,7 +347,7 @@ public class BookPageFactory{
 			}
 		}
 		//計算百分比（不包括當前頁）並格式化
-		float fPercent = (float) (m_mbBufBegin * 1.0 / m_mbBufLen);
+		 fPercent = (float) (m_mbBufBegin * 1.0 / m_mbBufLen);
 		DecimalFormat df = new DecimalFormat("#0.0");
 	    strPercent = df.format(fPercent * 100) + "%";
 		if(isShowMsg)
@@ -368,17 +366,29 @@ public class BookPageFactory{
 			c.drawText(BookName, 0,msg_y, mPaint_formsg);
 		}
 	}
+
+
+	public float getfPercent() {
+		return fPercent;
+	}
+
+	/**取得書本檔案大小*/
+	public int getM_mbBufLen() {
+		return m_mbBufLen;
+	}
+	/**設定當前書本名稱*/
 	public void setBookName(String bookName) {
 		BookName = bookName;
 	}
-
+     /**設定書頁背景*/
 	public void setBgBitmap(Bitmap BG) {
 		m_book_bg = BG;
 	}
-	 
+	 /**開始頁面*/
 	public boolean isfirstPage() {
 		return m_isfirstPage;
 	}
+	/**最後一頁*/
 	public boolean islastPage() {
 		return m_islastPage;
 	}
@@ -387,6 +397,7 @@ public class BookPageFactory{
 	public void setM_strCharsetName(String m_strCharsetName) {
 		this.m_strCharsetName = m_strCharsetName;
 	}
+	/**取得當前編碼*/
 	public String getM_strCharsetName() {
 		return m_strCharsetName;
 	}
@@ -401,9 +412,11 @@ public class BookPageFactory{
 		this.mVisibleHeight = this.mHeight - this.marginHeight * 2;
 		this.mLineCount = (int) (this.mVisibleHeight / textheight)-delay_lineCount;
 	}
+	/**設定抵不減少行數*/
 	public void setDelay_lineCount(int delay_lineCount) {
 		this.delay_lineCount = delay_lineCount;
 	}
+	/**取得背景顏色*/
 	public int getM_backColor() {
 		return m_backColor;
 	}
@@ -413,9 +426,11 @@ public class BookPageFactory{
 		mPaint.setColor(m_textColor);
 		mPaint_formsg.setColor(m_textColor);
 	}	
+	/**取得文字Color*/
 	public int  getM_textColor() {
 		return m_textColor;
 	}
+	/**設定訊息文字大小*/
 	public void setM_fontSize_forMsg(float m_fontSize_forMsg) {
 		this.m_fontSize_forMsg = m_fontSize_forMsg;
 	}
@@ -450,10 +465,6 @@ public class BookPageFactory{
 	/**當前進度*/
 	public String getStrPercent() {
 		return strPercent;
-	}
-	/**當前進度*/
-	public void setStrPercent(String strPercent) {
-		this.strPercent = strPercent;
 	}
 	/**當前結束位置*/
 	public int getM_mbBufEnd() {
