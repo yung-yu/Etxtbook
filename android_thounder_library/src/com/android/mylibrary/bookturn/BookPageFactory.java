@@ -20,6 +20,7 @@ import android.graphics.Paint.Align;
 import android.graphics.Paint.FontMetrics;
 
 
+@SuppressLint("DrawAllocation")
 public class BookPageFactory{
     //private final String TAGLOG = "BOOK";
 	private File book_file = null;
@@ -326,7 +327,7 @@ public class BookPageFactory{
 		m_mbBufBegin = m_mbBufEnd;
 		m_lines = pageDown();
 	}
-	@SuppressLint("DrawAllocation")
+
 	public void onDraw(Canvas c) {
 		if (m_lines.size() == 0)
 			m_lines = pageDown();	

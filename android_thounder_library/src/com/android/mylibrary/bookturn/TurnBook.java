@@ -1,7 +1,7 @@
 ﻿package com.android.mylibrary.bookturn;
 
 import java.io.IOException;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 
+@SuppressLint("WrongCall")
 public class TurnBook extends PageWidget{
 	Bitmap mCurPageBitmap, mNextPageBitmap;
 	Canvas mCurPageCanvas, mNextPageCanvas;

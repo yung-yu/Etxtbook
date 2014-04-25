@@ -12,6 +12,7 @@ import com.android.ebook.data.sharePerferenceHelper;
 import com.android.ebook.ui.BookActivity;
 import com.android.mylibrary.filebrowser.FileItem;
 import com.android.mylibrary.filebrowser.fileChooser;
+
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -70,7 +72,7 @@ public class MainActivity extends Activity {
 		iv_addbook = (ImageView)findViewById(R.id.imageButton1);
 		bt_clearcache = (ImageView)findViewById(R.id.imageButton2);
 		tv_Msg = (TextView)findViewById(R.id.tv_msg);
-	    tv_Msg.setText(getString(R.string.easy_read));
+	
 		mBookAdapter = new BookAdapter(this);
 		gv_desk.setAdapter(mBookAdapter);
 		gv_desk.setOnItemClickListener(new OnItemClickListener() {
@@ -197,11 +199,13 @@ public class MainActivity extends Activity {
 			}
 		});
 		  mfileChooser.init(Environment.getExternalStorageDirectory());
+		 
 	}
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		showAppMsg();
 		new Thread(new Runnable() {
 				
 				@Override
@@ -224,6 +228,17 @@ public class MainActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onPause();
 	}
+   public void showAppMsg(){
+	   try{
+		PackageInfo pkgInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+		String verName = pkgInfo.versionName;
+		int pointIndex = verName.lastIndexOf(".");
+	    tv_Msg.setText(getString(R.string.easy_read)+"\n Ver"+verName.substring(0, pointIndex)
+	    		+" Build"+verName.substring(pointIndex+1));
+	   }catch(Exception e){
+		   e.printStackTrace();
+	   }
+   }
    public boolean checkbookIsExists(Book item){
 	for(int i=0;i<booklist.size();i++)
 	{

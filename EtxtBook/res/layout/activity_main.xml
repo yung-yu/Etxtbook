@@ -4,18 +4,6 @@
     android:layout_height="match_parent" 
     android:background="@color/bg">
 
-    <GridView
-        android:id="@+id/desk"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tableRow1"
-        android:numColumns="3"
-        android:scrollbars="none"
-        android:stretchMode="columnWidth" 
-        android:listSelector="@null">
-
-    </GridView>
-
     <TableRow
         android:id="@+id/tableRow1"
         android:layout_width="match_parent"
@@ -25,22 +13,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
-            <TextView
-                android:id="@+id/tv_msg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/imageButton1"
-                android:layout_toLeftOf="@+id/imageButton2"
-                android:layout_toRightOf="@+id/imageButton1"
-                android:background="@drawable/blackboard"
-                android:gravity="center"
-                android:textColor="#ffffff"
-                android:textSize="@dimen/title_textsize" />
-
             <View
                 android:id="@+id/view1"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/activity_vertical_margin"
+                android:layout_height="@dimen/activity_horizontal_margin"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/tv_msg"
                 android:background="@drawable/desk_top" />
@@ -63,8 +39,46 @@
                      android:scaleType="centerCrop"
                      android:src="@drawable/garbage" />
 
+                 <TextView
+                     android:id="@+id/tv_msg"
+                     android:layout_width="match_parent"
+                     android:layout_height="@dimen/point_icon_widht_height"
+                     android:layout_centerVertical="true"
+                     android:layout_toLeftOf="@+id/imageButton2"
+                     android:layout_toRightOf="@+id/imageButton1"
+                     android:background="@drawable/blackboard"
+                     android:gravity="center"
+                     android:textColor="#ffffff"
+                     android:textSize="@dimen/title_textsize" />
+
+                 <RelativeLayout
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content" >
+                 </RelativeLayout>
+
         </RelativeLayout>
 
     </TableRow>
+
+    <GridView
+        android:id="@+id/desk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1"
+        android:listSelector="@null"
+        android:numColumns="3"
+        android:scrollbars="none"
+        android:stretchMode="columnWidth" >
+
+    </GridView>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tableRow1"
+        android:text="TextView" />
 
 </RelativeLayout>
