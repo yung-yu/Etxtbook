@@ -69,8 +69,11 @@ public class BookActivity extends Activity{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 	    isTable = Unity.isTablet(this);
+        getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+                WindowManager.LayoutParams.FLAG_FULLSCREEN );
 		if(isTable){
-			requestWindowFeature(Window.FEATURE_ACTION_BAR);
+			//requestWindowFeature(Window.FEATURE_ACTION_BAR);
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}else{
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}
@@ -83,7 +86,7 @@ public class BookActivity extends Activity{
         initImageLoader();
         mBookData = new BookData(this);
         decode_array = parent.getResources().getStringArray(R.array.decoding_value);	    
-	    int magin = (int) getResources().getDimension(R.dimen.bookPage_magin);
+	    int magin = (int) getResources().getDimension(R.dimen.bookPage_magin); 
 	    mTurnBook = new TurnBook(this, dm.widthPixels, dm.heightPixels,magin,magin);	
 	    setContentView(mTurnBook);
 	    mTurnBook.setVisibility(View.INVISIBLE);
@@ -142,9 +145,12 @@ public class BookActivity extends Activity{
 	
 	public void initBook(){
 		setBookBg();
-		mTurnBook.setBookFile(filePath, false);
+		if(filePath.startsWith(BookData.ASSATS_PATH))
+		  mTurnBook.setBookFile(filePath.substring(BookData.ASSATS_PATH.length()), true);
+		else
+		  mTurnBook.setBookFile(filePath, false);
 		if(isTable){
-			mTurnBook.getBookPageFactory().setDelay_lineCount(3);
+			//mTurnBook.getBookPageFactory().setDelay_lineCount(3);
 		}
 		mTurnBook.setOnBookChangeListener(new TurnBook.onBookChangeListener() {
 			
@@ -159,19 +165,6 @@ public class BookActivity extends Activity{
 			public void onFinalIndex() {
 				// TODO Auto-generated method stub
 				Toast.makeText(parent, getString(R.string.book_end), Toast.LENGTH_SHORT).show();
-			}
-			
-			@Override
-			public void onBookChange(final String Prcent) {
-				// TODO Auto-generated method stub
-					runOnUiThread(new Runnable() {
-						
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-							setTitle(Prcent +"  "+bookname);
-						}
-					});
 			}
 		});
 		mTurnBook.getBookPageFactory().setIsShowMsg(true);
@@ -207,12 +200,12 @@ public class BookActivity extends Activity{
 		switch (type) {
 		case 0:
 			mTurnBook.setBookBackgroundBitmap(null);
-			mTurnBook.getBookPageFactory().setM_backColor(getResources().getColor(R.color.bg));
+			mTurnBook.setBookBackgroundColor(getResources().getColor(R.color.bg));
 			break;
 		case 1:
 			int bg_color = sharePerferenceHelper.getIntent(this).getInt(BOOK_BG_COLOR,color.white);
 			mTurnBook.setBookBackgroundBitmap(null);
-			mTurnBook.getBookPageFactory().setM_backColor(bg_color);
+			mTurnBook.setBookBackgroundColor(bg_color);
 			break;
 		case 2:
 			Uri myUri = Uri.parse( sharePerferenceHelper.getIntent(this).getString(BOOK_BG_PATH, ""));

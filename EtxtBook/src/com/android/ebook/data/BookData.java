@@ -1,6 +1,7 @@
 package com.android.ebook.data;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -82,6 +83,7 @@ public class BookData {
 
 			db.execSQL(Create_table_book);
 			db.execSQL(Create_table_bookmark);
+			firstCreateDb(db);
 
 		}
 
@@ -99,8 +101,10 @@ public class BookData {
 	ContentValues value;
 	List<Book> bookList = new ArrayList<Book>();
 	List<BookMark> bookMarkList = new ArrayList<BookMark>();
+	public static final String ASSATS_PATH = "assets:\\";
 	public  BookData(Context context){
 		open(context);
+	
 	}
 	private void open(Context context){
 		if(msqlitHelper == null)
@@ -113,7 +117,22 @@ public class BookData {
 			msqlitHelper = null;
 		}
 	}
-
+    private void firstCreateDb(SQLiteDatabase db){
+    		Book item = new Book();
+    		item.setBookName("¤d½[Øpª«»y");
+    		item.setBookPath(ASSATS_PATH+"demo1.txt");
+    		Calendar c = Calendar.getInstance();
+    		int date =Unity.getCurDate(c);
+    		int time =Unity.getCurTime(c);
+    		value = new ContentValues();
+    		value.put(Cloums.BOOK_NAME, item.getBookName());
+    		value.put(Cloums.BOOK_PATH, item.getBookPath());
+    		value.put(Cloums.CREATE_DATE, date);
+    		value.put(Cloums.CREATE_TIME, time);
+    		value.put(Cloums.UPDATE_DATE, date);
+    		value.put(Cloums.UPDATE_TIME, time);
+    		db.insert(Table.BOOK,null, value);
+    }
 	private Cursor query(String table, String selection,String orderBy){
 		return msqlitHelper.getReadableDatabase().query(table, null, selection, null, null, null, orderBy);
 	}
@@ -170,7 +189,7 @@ public class BookData {
 		open(context);
 		Cursor mCursor = query(Table.BOOK, null, null);
 		int value = 0;
-		while(mCursor.moveToNext())
+		for(mCursor.moveToFirst();!mCursor.isAfterLast();mCursor.moveToNext())
 		{  
 			if(mCursor.getString(CloumsIndex.BOOK_PATH).equals(Path)){
 				value = mCursor.getInt(CloumsIndex.BOOK_DECODE);
@@ -206,12 +225,15 @@ public class BookData {
 		bookList.clear();
 		String orderBy = Cloums.UPDATE_DATE+" DESC ,"+Cloums.UPDATE_TIME+" DESC";
 		Cursor mCursor = query(Table.BOOK, null, orderBy);
-		while(mCursor.moveToNext())
+		if(mCursor.getCount()>0)
 		{
-			Book mBook = new Book();
-			mBook.setBookName(mCursor.getString(CloumsIndex.BOOK_NAME));
-			mBook.setBookPath(mCursor.getString(CloumsIndex.BOOK_PATH));
-			bookList.add(mBook);
+			for(mCursor.moveToFirst();!mCursor.isAfterLast();mCursor.moveToNext())
+			{
+				Book mBook = new Book();
+				mBook.setBookName(mCursor.getString(CloumsIndex.BOOK_NAME));
+				mBook.setBookPath(mCursor.getString(CloumsIndex.BOOK_PATH));
+				bookList.add(mBook);
+			}
 		}
 		mCursor.close();
 		close();
@@ -224,16 +246,19 @@ public class BookData {
 		String orderBy = Cloums.UPDATE_DATE+" DESC ,"+Cloums.UPDATE_TIME+" DESC";
 		Cursor mCursor = query(Table.BOOK_MARK, Where, orderBy);
 		BookMark mBookMark = null;
-		while(mCursor.moveToNext())
+		if(mCursor.getCount()>0)
 		{
-			if(mCursor.getString(CloumsIndex.BOOK_PATH).equals(Path))
+			for(mCursor.moveToFirst();!mCursor.isAfterLast();mCursor.moveToNext())
 			{
-			    mBookMark = new BookMark();
-				mBookMark.setBegin(mCursor.getInt(CloumsIndex.BOOK_TAG));
-				mBookMark.setContent(mCursor.getString(CloumsIndex.BOOK_TAG_TEXT));
-				mBookMark.setPercent(mCursor.getInt(CloumsIndex.BOOK_TAG_PERCENT));
-				mBookMark.setUpdate_date(mCursor.getInt(CloumsIndex.UPDATE_DATE));
-				break;
+				if(mCursor.getString(CloumsIndex.BOOK_PATH).equals(Path))
+				{
+				    mBookMark = new BookMark();
+					mBookMark.setBegin(mCursor.getInt(CloumsIndex.BOOK_TAG));
+					mBookMark.setContent(mCursor.getString(CloumsIndex.BOOK_TAG_TEXT));
+					mBookMark.setPercent(mCursor.getInt(CloumsIndex.BOOK_TAG_PERCENT));
+					mBookMark.setUpdate_date(mCursor.getInt(CloumsIndex.UPDATE_DATE));
+					break;
+				}
 			}
 		}
 		mCursor.close();

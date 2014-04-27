@@ -380,11 +380,12 @@ public class PageWidget extends View {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		canvas.drawColor(0xFFA9AAAB);	
+		//deawBackBg(canvas);	
+		canvas.drawColor(0xFFAAAAAA);
 		calcPoints();
 		drawCurrentPageArea(canvas, mCurPageBitmap, mPath0);
 		drawNextPageAreaAndShadow(canvas, mNextPageBitmap);
-		drawCurrentPageShadow(canvas);
+		//drawCurrentPageShadow(canvas);
 		drawCurrentBackArea(canvas, mCurPageBitmap);
 	
 	}
@@ -440,7 +441,8 @@ public class PageWidget extends View {
 				GradientDrawable.Orientation.LEFT_RIGHT, mBackShadowColors);
 		mBackShadowDrawableLR.setGradientType(GradientDrawable.LINEAR_GRADIENT);
 
-		mFrontShadowColors = new int[] { 0x80111111, 0x111111 };
+		//mFrontShadowColors = new int[] { 0x80111111, 0x111111 };
+		mBackShadowColors = new int[] { 0xff111111, 0x111111 };
 		mFrontShadowDrawableVLR = new GradientDrawable(
 				GradientDrawable.Orientation.LEFT_RIGHT, mFrontShadowColors);
 		mFrontShadowDrawableVLR
@@ -612,7 +614,6 @@ public class PageWidget extends View {
 		mMatrix.preTranslate(-mBezierControl1.x, -mBezierControl1.y);
 		mMatrix.postTranslate(mBezierControl1.x, mBezierControl1.y);
 		canvas.drawBitmap(bitmap, mMatrix, mPaint);
-		// canvas.drawBitmap(bitmap, mMatrix, null);
 		mPaint.setColorFilter(null);
 		canvas.rotate(mDegrees, mBezierStart1.x, mBezierStart1.y);
 		mFolderShadowDrawable.setBounds(left, (int) mBezierStart1.y, right,

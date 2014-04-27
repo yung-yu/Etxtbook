@@ -48,7 +48,7 @@ public class BookPageFactory{
 	private boolean m_isfirstPage,m_islastPage;
 	String strPercent = "";
 	// private int m_nLineSpaceing = 5;
-    private int delay_lineCount = 1;
+    private int delay_lineCount = 0;
 
 	private Paint mPaint;
 	private Paint mPaint_formsg;
@@ -333,7 +333,7 @@ public class BookPageFactory{
 			m_lines = pageDown();	
 	    int textheight = (int) (mPaint.descent() - mPaint.ascent())+1;
 		if (m_lines.size() > 0) {	
-			c.drawColor(0xffffffee);
+			c.drawColor(0xFFAAAAAA);
 			if (m_book_bg != null){
 				c.drawBitmap(m_book_bg, 0, 0, null);
 			}else{
@@ -357,7 +357,7 @@ public class BookPageFactory{
 			int nPercentWidth = (int) mPaint.measureText(strPercent) + 1;
 			mPaint_formsg.setTextAlign(Align.RIGHT);
 			int th = (int) (mPaint_formsg.descent() - mPaint_formsg.ascent());
-			float msg_y = mHeight-marginHeight-th;
+			float msg_y = mHeight-m_fontSize_forMsg;
 			c.drawText(strPercent, mWidth, msg_y , mPaint_formsg);
 			mPaint_formsg.setTextAlign(Align.LEFT);
 			int size=mPaint_formsg.breakText(BookName, true, mWidth-nPercentWidth,null);

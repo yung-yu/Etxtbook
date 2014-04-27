@@ -1,6 +1,8 @@
 package com.android.ebook;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -23,6 +25,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -31,7 +34,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
@@ -42,7 +44,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
-    MenuDrawer mMenuDrawer;
+    MenuDrawer mMenu_left,mMenu_right;
     FileAdapter fadapter;
     ListView lv;
     fileChooser mfileChooser;
@@ -59,15 +61,18 @@ public class MainActivity extends Activity {
     BookData mBookData;
     Context context;
     TextView tv_Msg;
+    List<String> removebooklist = new ArrayList<String>();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		mBookData = new BookData(this);
-		context = this;
-		mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_WINDOW,Position.LEFT);
-		mMenuDrawer.setContentView( R.layout.activity_main);
-		mMenuDrawer.setMenuView(R.layout.filelist);	
+		context = this;	
+		setContentView( R.layout.activity_main);
+		mMenu_left = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_WINDOW,Position.LEFT);
+		mMenu_left.setMenuView(R.layout.filelist);	
+		mMenu_right = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_WINDOW,Position.RIGHT);
+		mMenu_right.setMenuView(R.layout.aboutview);
 		gv_desk = (GridView)findViewById(R.id.desk);
 		iv_addbook = (ImageView)findViewById(R.id.imageButton1);
 		bt_clearcache = (ImageView)findViewById(R.id.imageButton2);
@@ -81,44 +86,66 @@ public class MainActivity extends Activity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, final int position,
 					long arg3) {
 				// TODO Auto-generated method stub
-				String filePath =booklist.get(position).getBookPath();
-				File mf = new File(filePath);
-				if(mf.exists())
-				{   
-					Bundle bd = new Bundle();
-					bd.putString("filepath",booklist.get(position).getBookPath());
-					bd.putString("bookname",booklist.get(position).getBookName());
-					Intent it=new Intent();
-					it.setClass(MainActivity.this, BookActivity.class);
-					it.putExtras(bd);
-					startActivity(it);
-			
+				if(!mBookAdapter.isRemoveMode())
+				{
+					String filePath =booklist.get(position).getBookPath();
+					if(filePath.startsWith(BookData.ASSATS_PATH))
+					{
+						Bundle bd = new Bundle();
+						bd.putString("filepath",booklist.get(position).getBookPath());
+						bd.putString("bookname",booklist.get(position).getBookName());
+						Intent it=new Intent();
+						it.setClass(MainActivity.this, BookActivity.class);
+						it.putExtras(bd);
+						startActivity(it);
+					}
+					else
+					{
+						File mf = new File(filePath);
+						if(mf.exists())
+						{   
+							Bundle bd = new Bundle();
+							bd.putString("filepath",booklist.get(position).getBookPath());
+							bd.putString("bookname",booklist.get(position).getBookName());
+							Intent it=new Intent();
+							it.setClass(MainActivity.this, BookActivity.class);
+							it.putExtras(bd);
+							startActivity(it);
+
+						}else{
+							Toast.makeText(context, getString(R.string.file_not_exist), Toast.LENGTH_SHORT).show();
+						}
+					}
 				}else{
-					Toast.makeText(context, getString(R.string.file_not_exist), Toast.LENGTH_SHORT).show();
+					if(removebooklist.contains(booklist.get(position).getBookPath())){
+						removebooklist.remove(booklist.get(position).getBookPath());
+						Toast.makeText(context, "取消選取 :"+booklist.get(position).getBookName(),Toast.LENGTH_SHORT ).show();
+					}else{
+						removebooklist.add(booklist.get(position).getBookPath());
+						Toast.makeText(context, "選取 :"+booklist.get(position).getBookName(),Toast.LENGTH_SHORT).show();
+					}
+					mBookAdapter.notifyDataSetChanged();
 				}
 			}
 			
 		}
         );
-		gv_desk.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int position, long arg3) {
-				// TODO Auto-generated method stub
-				if(position<booklist.size()){
-				   ShowTipDeleteBook(booklist.get(position).getBookPath());
-				}
-				return false;
-			}
-		});
 		iv_addbook.setOnClickListener(new View.OnClickListener(){
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-			
-				mMenuDrawer.openMenu();
+				if(!mBookAdapter.isRemoveMode())
+						mMenu_left.openMenu();
+				else{
+					mBookAdapter.setRemoveMode(false);
+					mMenu_left.setTouchMode(MenuDrawer.TOUCH_MODE_FULLSCREEN);
+					showAppMsg();
+					removebooklist.clear();
+					mBookAdapter.notifyDataSetChanged();
+					iv_addbook.setImageResource(R.drawable.storage);
+					bt_clearcache.setImageResource(R.drawable.garbage);
+				}
 			}
 			
 		});
@@ -127,15 +154,18 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-			
-				showclearDialog();
+				if(!mBookAdapter.isRemoveMode())
+				    showclearDialog();
+				else{
+					ShowTipDeleteBook();
+				}
 			}
 			
 		});
 		fadapter = new FileAdapter(this);
-		lv = (ListView)mMenuDrawer.getMenuView().findViewById(R.id.lv);
-		bt_back = (ImageView)mMenuDrawer.getMenuView().findViewById(R.id.bt_back);
-		tv = (TextView)mMenuDrawer.getMenuView().findViewById(R.id.textView1);
+		lv = (ListView)mMenu_left.getMenuView().findViewById(R.id.lv);
+		bt_back = (ImageView)mMenu_left.getMenuView().findViewById(R.id.bt_back);
+		tv = (TextView)mMenu_left.getMenuView().findViewById(R.id.textView1);
 		lv.setAdapter(fadapter);
 		lv.setOnItemClickListener(new OnItemClickListener() {
 
@@ -199,7 +229,7 @@ public class MainActivity extends Activity {
 			}
 		});
 		  mfileChooser.init(Environment.getExternalStorageDirectory());
-		 
+		
 	}
 	@Override
 	protected void onResume() {
@@ -214,7 +244,7 @@ public class MainActivity extends Activity {
 
 				  booklist.clear();
 				  booklist.addAll(mBookData.getBookList(context));
-				runOnUiThread( new Runnable() {
+				  runOnUiThread( new Runnable() {
 					public void run() {
 						   mBookAdapter.notifyDataSetChanged();
 					}
@@ -263,7 +293,13 @@ public class MainActivity extends Activity {
 				  case 1:
 					  ShowCleatBookData();
 					  break;
-
+				  case 2:
+					mBookAdapter.setRemoveMode(true);
+					mMenu_left.setTouchMode(MenuDrawer.TOUCH_MODE_NONE);
+					tv_Msg.setText(R.string.setOnremoveMode);
+					iv_addbook.setImageResource(R.drawable.cancel);
+					bt_clearcache.setImageResource(R.drawable.ok);
+					  break;
 				  default:
 					  break;
 				  }
@@ -282,7 +318,7 @@ public class MainActivity extends Activity {
 	  }
    private void ShowCleatBookData(){
 		  AlertDialog.Builder ab =new AlertDialog.Builder(this);
-		  ab.setTitle(R.string.alert_tip_delete);
+		  ab.setTitle(R.string.alert_tip_Alldelete);
 		  ab.setNegativeButton(R.string.alert_ok, new DialogInterface.OnClickListener() {
 			
 			@Override
@@ -306,7 +342,7 @@ public class MainActivity extends Activity {
 	  }
    private void ShowClearStatus(){
 		  AlertDialog.Builder ab =new AlertDialog.Builder(this);
-		  ab.setTitle(R.string.alert_tip_delete);
+		  ab.setTitle(R.string.alert_tip_deleteStatus);
 		  ab.setNegativeButton(R.string.alert_ok, new DialogInterface.OnClickListener() {
 			
 			@Override
@@ -326,19 +362,30 @@ public class MainActivity extends Activity {
 		});
 	    ab.create().show();
 	  }
-  private void ShowTipDeleteBook(final String Path){
+   
+  private void ShowTipDeleteBook(){
 	  AlertDialog.Builder ab =new AlertDialog.Builder(this);
-	  ab.setTitle(R.string.alert_tip_delete);
+	  ab.setTitle(R.string.alert_tip_deleteSelect);
 	  ab.setNegativeButton(R.string.alert_ok, new DialogInterface.OnClickListener() {
 		
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
 			// TODO Auto-generated method stub
-			  mBookData.deleteBook(context,Path);
-			  booklist.clear();
-			  booklist.addAll(mBookData.getBookList(context));
-	
-			 mBookAdapter.notifyDataSetChanged();
+		
+			if(removebooklist.size()>0)
+			{
+				 for(int i=0;i<removebooklist.size();i++)
+				  mBookData.deleteBook(context,removebooklist.get(i));
+				  booklist.clear();
+				  booklist.addAll(mBookData.getBookList(context));	
+				  Toast.makeText(context, "刪除成功!", Toast.LENGTH_SHORT).show();
+			}	
+			mBookAdapter.setRemoveMode(false);
+			mMenu_left.setTouchMode(MenuDrawer.TOUCH_MODE_FULLSCREEN);
+			showAppMsg();
+			iv_addbook.setImageResource(R.drawable.storage);
+			bt_clearcache.setImageResource(R.drawable.garbage);
+			mBookAdapter.notifyDataSetChanged();
 		
 			dialog.cancel();
 		}
@@ -407,6 +454,14 @@ private class BookAdapter extends BaseAdapter{
 	LayoutInflater inflater;  
 	class viewholder{
 		TextView tv;
+		ImageView select;
+	}
+	boolean isRemoveMode  = false;
+	public boolean isRemoveMode() {
+		return isRemoveMode;
+	}
+	public void setRemoveMode(boolean isRemoveMode) {
+		this.isRemoveMode = isRemoveMode;
 	}
 	public BookAdapter(Context context){
 		inflater = LayoutInflater.from(context);
@@ -437,26 +492,34 @@ private class BookAdapter extends BaseAdapter{
 			vh = new viewholder();
 			v = inflater.inflate(R.layout.bookitem, null);
 			vh.tv = (TextView)v.findViewById(R.id.textView1);
+			vh.select = (ImageView)v.findViewById(R.id.imageView1);
 			v.setTag(vh);
 		}else{
 			vh = (viewholder) v.getTag();
 		}
 		if(position<booklist.size())
 			vh.tv.setText(booklist.get(position).getBookName());
-		v.setOnTouchListener(new View.OnTouchListener() {
-			
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				// TODO Auto-generated method stub
-				runOnUiThread( new Runnable() {
-					public void run() {
-						if(position<booklist.size())
-							tv_Msg.setText(booklist.get(position).getBookName());
-					}
-				});
-				return false;
-			}
-		});
+		if(!isRemoveMode){
+			v.setOnTouchListener(new View.OnTouchListener() {
+				
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					// TODO Auto-generated method stub
+					runOnUiThread( new Runnable() {
+						public void run() {
+							if(position<booklist.size()&&!mBookAdapter.isRemoveMode())
+								tv_Msg.setText(booklist.get(position).getBookName());
+						}
+					});
+					return false;
+				}
+			});
+			vh.select.setVisibility(View.GONE);
+		}else{
+			v.setOnTouchListener(null);
+			vh.select.setVisibility(removebooklist.contains(booklist.get(position).getBookPath())?View.VISIBLE:View.GONE);
+		}
+		
 		return v;
 	}
 	   
@@ -465,8 +528,8 @@ private class BookAdapter extends BaseAdapter{
 public boolean onKeyDown(int keyCode, KeyEvent event) {
 	// TODO Auto-generated method stub
 	if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
-		if(mMenuDrawer.isMenuVisible()){
-			mMenuDrawer.closeMenu();
+		if(mMenu_left.isMenuVisible()){
+			mMenu_left.closeMenu();
 			return false;
 		}
 	}

@@ -12,7 +12,9 @@
     <string name="text_decoding">文字編碼</string>
     <string name="alert_ok">確認</string>
     <string name="alert_cancel">取消</string>
-    <string name="alert_tip_delete">是否要刪除?</string>
+    <string name="alert_tip_Alldelete">是否要刪除所有書本資料?</string>
+    <string name="alert_tip_deleteSelect">是否要刪除選取的書本?</string>
+    <string name="alert_tip_deleteStatus">是否要初始化所有狀態?</string>
     <string name="alert_title_txtcolor">選取文字顏色</string>
     <string name="alert_title_txtsize">文字大小</string>
     <string name="alert_title_pgbg">選擇背景樣式</string>
@@ -26,4 +28,5 @@
     <string name="book_start">世界的起跑點!</string>
     <string name="book_end">精彩內容已結束!</string>
     <string name="book_percent">進度</string>
+   <string name="setOnremoveMode">啟動清除模式!\n請點選想要刪除書本!</string>
 </resources>

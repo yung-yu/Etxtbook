@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" 
-    android:background="@color/bg">
+    android:layout_height="match_parent"
+    android:background="@color/bg" >
 
     <TableRow
         android:id="@+id/tableRow1"
@@ -27,37 +27,31 @@
                 android:layout_height="@dimen/point_icon_widht_height"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/search_file" />
+                android:scaleType="centerInside"
+                android:src="@drawable/storage" />
 
-                 <ImageView
-                     android:id="@+id/imageButton2"
-                     android:layout_width="@dimen/point_icon_widht_height"
-                     android:layout_height="@dimen/point_icon_widht_height"
-                     android:layout_alignParentRight="true"
-                     android:layout_alignTop="@+id/imageButton1"
-                     android:scaleType="centerCrop"
-                     android:src="@drawable/garbage" />
+            <TextView
+                android:id="@+id/tv_msg"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/point_icon_widht_height"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/imageButton2"
+                android:layout_toRightOf="@+id/imageButton1"
+                android:background="@drawable/blackboard"
+                android:gravity="center"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/title_textsize" />
 
-                 <TextView
-                     android:id="@+id/tv_msg"
-                     android:layout_width="match_parent"
-                     android:layout_height="@dimen/point_icon_widht_height"
-                     android:layout_centerVertical="true"
-                     android:layout_toLeftOf="@+id/imageButton2"
-                     android:layout_toRightOf="@+id/imageButton1"
-                     android:background="@drawable/blackboard"
-                     android:gravity="center"
-                     android:textColor="#ffffff"
-                     android:textSize="@dimen/title_textsize" />
-
-                 <RelativeLayout
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content" >
-                 </RelativeLayout>
+            <ImageView
+                android:id="@+id/imageButton2"
+                android:layout_width="@dimen/point_icon_widht_height"
+                android:layout_height="@dimen/point_icon_widht_height"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/imageButton1"
+                android:scaleType="centerInside"
+                android:src="@drawable/garbage" />
 
         </RelativeLayout>
-
     </TableRow>
 
     <GridView
@@ -65,20 +59,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView1"
+        android:layout_below="@+id/tableRow1"
         android:listSelector="@null"
         android:numColumns="3"
         android:scrollbars="none"
         android:stretchMode="columnWidth" >
-
     </GridView>
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/tableRow1"
-        android:text="TextView" />
+
 
 </RelativeLayout>

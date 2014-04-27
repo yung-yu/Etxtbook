@@ -14,8 +14,9 @@
     <dimen name="bookName_textsize">24dp</dimen>
     <dimen name="bookitem_width">135dp</dimen>
     <dimen name="bookitem_height">150dp</dimen>
-      <dimen name="bookitem_padding_left">35dp</dimen>
+    <dimen name="bookitem_padding_left">35dp</dimen>
     <dimen name="bookitem_padding_right">20dp</dimen>
     <dimen name="file_back_widthheight">70dp</dimen>
-     <dimen name="txt_msg_textsize">20dp</dimen>
+    <dimen name="txt_msg_textsize">20dp</dimen>
+    <dimen name="about_msg_txt_size">30dp</dimen>
 </resources>

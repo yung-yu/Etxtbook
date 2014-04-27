@@ -21,7 +21,6 @@ public class TurnBook extends PageWidget{
 		this.sonBookChangeListener = sonBookChangeListener;
 	}
 	public interface onBookChangeListener{
-		   void onBookChange(String Prcent);
 		   void onFirstIndex();
 		   void onFinalIndex();
 	}
@@ -68,8 +67,7 @@ public class TurnBook extends PageWidget{
 								return false;
 							}
 							pagefactory.onDraw(mNextPageCanvas);
-							if(sonBookChangeListener!=null)
-								sonBookChangeListener.onBookChange( pagefactory.getStrPercent());
+		
 						} else {
 							try {
 								//false，顯示下一頁							
@@ -84,8 +82,6 @@ public class TurnBook extends PageWidget{
 								return false;
 							}
 							pagefactory.onDraw(mNextPageCanvas);
-							if(sonBookChangeListener!=null)
-								sonBookChangeListener.onBookChange( pagefactory.getStrPercent());
 						}
 						setBitmaps(mCurPageBitmap, mNextPageBitmap);
 					}
@@ -115,9 +111,7 @@ public class TurnBook extends PageWidget{
 			}						
 			pagefactory.onDraw(mCurPageCanvas);
 			setBitmaps(mCurPageBitmap, mCurPageBitmap);
-			  postInvalidate();
-			  if(sonBookChangeListener!=null)
-					sonBookChangeListener.onBookChange( pagefactory.getStrPercent());
+			 postInvalidate();
 			  return true;
 	}
 	public boolean NextPage(){	 		  
@@ -136,28 +130,19 @@ public class TurnBook extends PageWidget{
 		pagefactory.onDraw(mCurPageCanvas);
 		setBitmaps(mCurPageBitmap, mCurPageBitmap);	
 		postInvalidate();
-		if(sonBookChangeListener!=null)
-			sonBookChangeListener.onBookChange( pagefactory.getStrPercent());
 		return true;
-	}
-	/**
-	 * %數轉換成小數再帶入
-	 * @param Percent
-	 */
-	public void setPercentToPage(float Percent){
-           Log.d("book","Percent :"+Percent);
-  
-            float beginPercent  = pagefactory.getM_mbBufBegin()/pagefactory.getM_mbBufLen();
-            float endPercent  = pagefactory.getM_mbBufEnd()/pagefactory.getM_mbBufLen();
-            Log.d("book","Percent :"+Percent);
-            Log.d("book","beginPercent :"+beginPercent);
-            Log.d("book","endPercent :"+endPercent);
-		
 	}
 	/**書頁背景*/
    public void setBookBackgroundBitmap(Bitmap bmp){
-	   if(pagefactory!=null)
+	   if(pagefactory!=null){
 		   pagefactory.setBgBitmap(bmp);
+	   }
+   }
+   /**書頁背景*/
+   public void setBookBackgroundColor(int color){
+	   if(pagefactory!=null){
+		   pagefactory.setM_backColor(color);
+	   }
    }
    /**書本檔案*/
    public void setBookFile(String PathOrBookName,boolean isFromAsset){
@@ -179,8 +164,6 @@ public class TurnBook extends PageWidget{
            pagefactory.onDraw(mCurPageCanvas);  
            pagefactory.onDraw(mNextPageCanvas);
            postInvalidate();
-           if(sonBookChangeListener!=null)
-    			sonBookChangeListener.onBookChange( pagefactory.getStrPercent());
 	   }
    }
    /**設定自體大小*/
