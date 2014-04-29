@@ -53,11 +53,7 @@ public class BookPageFactory{
 	private Paint mPaint;
 	private Paint mPaint_formsg;
 	private String BookName = "";
-	private Boolean isShowMsg = false;
 	float fPercent = 0.0f;
-	public void setIsShowMsg(Boolean isShowMsg) {
-		this.isShowMsg = isShowMsg;
-	}
 	public BookPageFactory(int w, int h,int marginWidth,int marginHeight) {
 		// TODO Auto-generated constructor stub
 		mWidth = w;
@@ -331,13 +327,13 @@ public class BookPageFactory{
 	public void onDraw(Canvas c) {
 		if (m_lines.size() == 0)
 			m_lines = pageDown();	
-	    int textheight = (int) (mPaint.descent() - mPaint.ascent())+1;
+		int textheight = (int) (mPaint.descent() - mPaint.ascent())+1;
 		if (m_lines.size() > 0) {	
 			c.drawColor(0xFFAAAAAA);
 			if (m_book_bg != null){
 				c.drawBitmap(m_book_bg, 0, 0, null);
 			}else{
-						c.drawColor(m_backColor);
+				c.drawColor(m_backColor);
 			}
 			int y = 0;
 			for (String strLine : m_lines) {
@@ -347,24 +343,21 @@ public class BookPageFactory{
 			}
 		}
 		//計算百分比（不包括當前頁）並格式化
-		 fPercent = (float) (m_mbBufBegin * 1.0 / m_mbBufLen);
-		DecimalFormat df = new DecimalFormat("#0.0");
-	    strPercent = df.format(fPercent * 100) + "%";
-		if(isShowMsg)
-		{
-			mPaint_formsg.setTextSize(m_fontSize_forMsg);
-			//計算999.9%所占的像素寬度	
-			int nPercentWidth = (int) mPaint.measureText(strPercent) + 1;
-			mPaint_formsg.setTextAlign(Align.RIGHT);
-			int th = (int) (mPaint_formsg.descent() - mPaint_formsg.ascent());
-			float msg_y = mHeight-m_fontSize_forMsg;
-			c.drawText(strPercent, mWidth, msg_y , mPaint_formsg);
-			mPaint_formsg.setTextAlign(Align.LEFT);
-			int size=mPaint_formsg.breakText(BookName, true, mWidth-nPercentWidth,null);
-			if(size<BookName.length())
-				BookName = BookName.substring(0,size);
-			c.drawText(BookName, 0,msg_y, mPaint_formsg);
-		}
+		fPercent = (float) (m_mbBufBegin * 1.0 / m_mbBufLen);
+		DecimalFormat df = new DecimalFormat("#0.0#");
+		strPercent = df.format(fPercent * 100) + "%";
+		mPaint_formsg.setTextSize(m_fontSize_forMsg);
+		//計算999.9%所占的像素寬度	
+		int nPercentWidth = (int) mPaint.measureText(strPercent) + 1;
+		mPaint_formsg.setTextAlign(Align.RIGHT);
+		int th = (int) (mPaint_formsg.descent() - mPaint_formsg.ascent());
+		float msg_y = mHeight-m_fontSize_forMsg;
+		c.drawText(strPercent, mWidth, msg_y , mPaint_formsg);
+		mPaint_formsg.setTextAlign(Align.LEFT);
+		int size=mPaint_formsg.breakText(BookName, true, mWidth-nPercentWidth,null);
+		if(size<BookName.length())
+			BookName = BookName.substring(0,size);
+		c.drawText(BookName, 0,msg_y, mPaint_formsg);
 	}
 
 

@@ -21,6 +21,8 @@
     <string name="alert_title_pgbgcolor">選擇背景顏色</string>
     <string name="alert_title_encode">選擇文字編碼</string>
     <string name="alert_title_clear">資源回收</string>
+    <string name="alert_title_screen">選擇視窗模式</string>
+    <string name="alert_screen_tip">將會在下次進來時切換到該模式!</string>
     <string name="file_not_exist">找不到檔案!</string>
     <string name="addbook">新增  &#038;s 到書櫃!</string>
     <string name="added"> &#038;s 已加到書櫃!</string>
@@ -28,5 +30,6 @@
     <string name="book_start">世界的起跑點!</string>
     <string name="book_end">精彩內容已結束!</string>
     <string name="book_percent">進度</string>
-   <string name="setOnremoveMode">啟動清除模式!\n請點選想要刪除書本!</string>
+    <string name="setOnremoveMode">啟動清除模式!\n請點選想要刪除書本!</string>
+    <string name="book_screen">畫面</string>
 </resources>

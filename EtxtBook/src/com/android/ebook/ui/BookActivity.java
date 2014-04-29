@@ -25,7 +25,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -45,6 +44,7 @@ public class BookActivity extends Activity{
     final String  BOOK_BG_TYPE= "Bookbgtype";
     final String  BOOK_BG_PATH= "Bookbgpath";
     final String  BOOK_BG_COLOR= "Bookbgclor";
+    final String  BOOK_SCREEN= "BookScreen";
     private static int RESULT_LOAD_IMAGE = 99999;
     LinearLayout Book;
 	Context parent;
@@ -63,14 +63,19 @@ public class BookActivity extends Activity{
     String bookname;
     Toast mToast;
     View DecorView;
+    int screenType;
  	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 	    isTable = Unity.isTablet(this);
-        getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+	    screenType = sharePerferenceHelper.getIntent(this).getInt(BOOK_SCREEN, 0);
+	    if(screenType!=0)
+	    { 	
+           getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, 
                 WindowManager.LayoutParams.FLAG_FULLSCREEN );
+	    }
 		if(isTable){
 			//requestWindowFeature(Window.FEATURE_ACTION_BAR);
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -87,7 +92,7 @@ public class BookActivity extends Activity{
         mBookData = new BookData(this);
         decode_array = parent.getResources().getStringArray(R.array.decoding_value);	    
 	    int magin = (int) getResources().getDimension(R.dimen.bookPage_magin); 
-	    mTurnBook = new TurnBook(this, dm.widthPixels, dm.heightPixels,magin,magin);	
+	    mTurnBook = new TurnBook(this, dm.widthPixels,screenType==0?dm.heightPixels-getStatusBarHeight():dm.heightPixels,magin,magin);	
 	    setContentView(mTurnBook);
 	    mTurnBook.setVisibility(View.INVISIBLE);
 	    new Thread(new Runnable() {
@@ -142,7 +147,14 @@ public class BookActivity extends Activity{
 		if(mTurnBook != null)
 			mTurnBook.recycle();
 	}
-	
+	public int getStatusBarHeight() { 
+	      int result = 0;
+	      int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+	      if (resourceId > 0) {
+	          result = getResources().getDimensionPixelSize(resourceId);
+	      } 
+	      return result;
+	} 
 	public void initBook(){
 		setBookBg();
 		if(filePath.startsWith(BookData.ASSATS_PATH))
@@ -167,7 +179,6 @@ public class BookActivity extends Activity{
 				Toast.makeText(parent, getString(R.string.book_end), Toast.LENGTH_SHORT).show();
 			}
 		});
-		mTurnBook.getBookPageFactory().setIsShowMsg(true);
 		mTurnBook.getBookPageFactory().setBookName(bookname);
 		mTurnBook.getBookPageFactory().setM_fontSize_forMsg(getResources().getDimension(R.dimen.txt_msg_textsize));
 		mTurnBook.setTextSize(sharePerferenceHelper.getIntent(this).getInt(BOOK_TEXT_SIZE, 30));
@@ -291,6 +302,9 @@ public class BookActivity extends Activity{
 		case R.id.item1:
 			showDecodeDialog();
 			break;
+		case R.id.item2:
+			showScreenDilog();
+			break;
 		case R.id.item3:
 			showDefineTextSizeDilog();
 			break;
@@ -352,7 +366,33 @@ public class BookActivity extends Activity{
 	  }
 		return super.dispatchKeyEvent(event);
 	}
+   private void showScreenDilog(){
+	   int type = sharePerferenceHelper.getIntent(this).getInt(BOOK_SCREEN, 0);
+	   AlertDialog.Builder ab = new AlertDialog.Builder( this);
+	   ab.setTitle(R.string.alert_title_pgbg);
+		  ab.setSingleChoiceItems(getResources().getStringArray(R.array.screen_select), type, new DialogInterface.OnClickListener() {
 
+			  @Override
+			  public void onClick(DialogInterface dialog, int which) {
+				  // TODO Auto-generated method stub
+				  if(screenType!=which)
+				  {
+					  sharePerferenceHelper.getIntent(parent).setInt(BOOK_SCREEN, which);
+					  Toast.makeText(parent, R.string.alert_screen_tip,  Toast.LENGTH_SHORT).show();
+				  }
+				  dialog.cancel();
+			  }
+		  });
+		  ab.setPositiveButton(R.string.alert_cancel, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.cancel();
+			}
+		});
+		  ab.show();
+   }
    public void showChangeBgDialog(){
 		int type = sharePerferenceHelper.getIntent(this).getInt(BOOK_BG_TYPE, 0);
 	   AlertDialog.Builder ab = new AlertDialog.Builder( this);

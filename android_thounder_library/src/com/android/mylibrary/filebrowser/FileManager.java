@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class fileChooser {
+public class FileManager {
     private File currentDirFile;
 	String currentDir = "/";
 	FileChangedListener sonFileChangedListener;
@@ -28,13 +28,13 @@ public class fileChooser {
 		if(sonFileChangedListener!=null)
 			sonFileChangedListener.selectFile(item);
 	}
-	public fileChooser( ){
+	public FileManager( ){
 	}
 	/**初始化檔案path*/
 	public void init(File f){
-		AnalysisFile(f);
+		analysisFile(f);
 	}
-	private void AnalysisFile(File f)
+	private void analysisFile(File f)
 	{
 		currentDirFile = f;
 		File[]dirs = f.listFiles();
@@ -82,19 +82,19 @@ public class fileChooser {
 				return ;
 			}else if(index==0){
 				curPath = "/";
-				AnalysisFile(new File(curPath));
+				analysisFile(new File(curPath));
 			}
 			else{
 				curPath = curPath.substring(0,index);
-				AnalysisFile(new File(curPath));
+				analysisFile(new File(curPath));
 			}
 		}
 	}
 	/**選取FileItem時 呼叫已做選檔或跳下一層處理*/
-	public void AnalysisFile(FileItem o){
+	public void analysisFile(FileItem o){
 		if(CheckFileIsDir(o))
 		{
-			AnalysisFile( new File(o.getPath()));
+			analysisFile( new File(o.getPath()));
 		}
 		else
 		{

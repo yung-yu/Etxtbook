@@ -50,7 +50,6 @@
                 android:layout_alignTop="@+id/imageButton1"
                 android:scaleType="centerInside"
                 android:src="@drawable/garbage" />
-
         </RelativeLayout>
     </TableRow>
 
@@ -58,14 +57,22 @@
         android:id="@+id/desk"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/ad"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/tableRow1"
         android:listSelector="@null"
         android:numColumns="3"
         android:scrollbars="none"
         android:stretchMode="columnWidth" >
+
     </GridView>
 
-
+    <LinearLayout
+        android:id="@+id/ad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:orientation="horizontal" />
 
 </RelativeLayout>

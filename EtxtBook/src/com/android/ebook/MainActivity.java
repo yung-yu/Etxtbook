@@ -1,8 +1,6 @@
 package com.android.ebook;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -13,7 +11,9 @@ import com.android.ebook.data.Unity;
 import com.android.ebook.data.sharePerferenceHelper;
 import com.android.ebook.ui.BookActivity;
 import com.android.mylibrary.filebrowser.FileItem;
-import com.android.mylibrary.filebrowser.fileChooser;
+import com.android.mylibrary.filebrowser.FileManager;
+import com.google.ads.*;
+import com.google.ads.AdRequest.ErrorCode;
 
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
@@ -26,11 +26,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -43,11 +45,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements AdListener{
     MenuDrawer mMenu_left,mMenu_right;
     FileAdapter fadapter;
     ListView lv;
-    fileChooser mfileChooser;
+    FileManager mfileChooser;
     List<FileItem> fList =new ArrayList<FileItem>();
     TextView tv;
     Button button1;
@@ -62,6 +64,7 @@ public class MainActivity extends Activity {
     Context context;
     TextView tv_Msg;
     List<String> removebooklist = new ArrayList<String>();
+    LinearLayout ad_area;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -71,11 +74,12 @@ public class MainActivity extends Activity {
 		setContentView( R.layout.activity_main);
 		mMenu_left = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_WINDOW,Position.LEFT);
 		mMenu_left.setMenuView(R.layout.filelist);	
-		mMenu_right = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_WINDOW,Position.RIGHT);
-		mMenu_right.setMenuView(R.layout.aboutview);
+//		mMenu_right = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_WINDOW,Position.RIGHT);
+//		mMenu_right.setMenuView(R.layout.aboutview);
 		gv_desk = (GridView)findViewById(R.id.desk);
 		iv_addbook = (ImageView)findViewById(R.id.imageButton1);
 		bt_clearcache = (ImageView)findViewById(R.id.imageButton2);
+		ad_area = (LinearLayout)findViewById(R.id.ad);
 		tv_Msg = (TextView)findViewById(R.id.tv_msg);
 	
 		mBookAdapter = new BookAdapter(this);
@@ -173,11 +177,11 @@ public class MainActivity extends Activity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 					long arg3) {
 				// TODO Auto-generated method stub
-				mfileChooser.AnalysisFile(fList.get(position));
+				mfileChooser.analysisFile(fList.get(position));
 			}
 		});
-		mfileChooser = new fileChooser();
-		mfileChooser.setOnFileChangedListener(new fileChooser.FileChangedListener() {
+		mfileChooser = new FileManager();
+		mfileChooser.setOnFileChangedListener(new FileManager.FileChangedListener() {
 			
 			@Override
 			public void toDir(List<FileItem> dirList, List<FileItem> filelist,
@@ -229,7 +233,7 @@ public class MainActivity extends Activity {
 			}
 		});
 		  mfileChooser.init(Environment.getExternalStorageDirectory());
-		
+		  //initAD();
 	}
 	@Override
 	protected void onResume() {
@@ -258,6 +262,23 @@ public class MainActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onPause();
 	}
+   @Override
+   public void onDestroy() {
+     if (adView != null) {
+       adView.destroy();
+     }
+     super.onDestroy();
+   }
+   AdView adView;
+    public void initAD(){
+        adView = new AdView(this, AdSize.SMART_BANNER,"" ); 
+        adView.setAdListener(this);
+        adView.setGravity(Gravity.CENTER);
+        ad_area.addView(adView,new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
+        AdRequest adrequest = new AdRequest();
+        adrequest.addTestDevice("3D2D6870257805D3");    
+        adView.loadAd(adrequest);
+    }
    public void showAppMsg(){
 	   try{
 		PackageInfo pkgInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -441,7 +462,7 @@ private class FileAdapter extends BaseAdapter{
 			vh = (viewholder) v.getTag();
 		}
 		vh.tv.setText(fList.get(position).getName());
-		if(fList.get(position).getFileType().equals(fileChooser.DIRECTORY)){
+		if(fList.get(position).getFileType().equals(FileManager.DIRECTORY)){
 			vh.iv.setVisibility(View.VISIBLE);
 		}else{
 			vh.iv.setVisibility(View.GONE);
@@ -534,6 +555,31 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 		}
 	}
 	return super.onKeyDown(keyCode, event);
+}
+@Override
+public void onDismissScreen(Ad arg0) {
+	// TODO Auto-generated method stub
+	
+}
+@Override
+public void onFailedToReceiveAd(Ad arg0, ErrorCode arg1) {
+	// TODO Auto-generated method stub
+	  Log.d("book", "failed to receive ad (" + arg1 + ")");
+}
+@Override
+public void onLeaveApplication(Ad arg0) {
+	// TODO Auto-generated method stub
+	
+}
+@Override
+public void onPresentScreen(Ad arg0) {
+	// TODO Auto-generated method stub
+	
+}
+@Override
+public void onReceiveAd(Ad arg0) {
+	// TODO Auto-generated method stub
+	
 }
 
 }

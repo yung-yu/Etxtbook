@@ -24,4 +24,8 @@
         <item>清空所有書本資料</item>
         <item>刪除書本(選取模式)</item>
     </string-array>
+        <string-array name="screen_select">
+        <item>視窗模式</item>
+        <item>全螢幕模式</item>
+    </string-array>
 </resources>
