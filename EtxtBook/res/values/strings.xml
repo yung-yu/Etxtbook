@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="app_name">EtxtBook</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">輕鬆閱讀</string>
     <string name="book_text_size">字體大小</string>
     <string name="book_text_color">文字顏色</string>
     <string name="add_book_mark">加入書籤</string>
@@ -32,4 +29,5 @@
     <string name="book_percent">進度</string>
     <string name="setOnremoveMode">啟動清除模式!\n請點選想要刪除書本!</string>
     <string name="book_screen">畫面</string>
+    <string name="book_status">初始化</string>
 </resources>

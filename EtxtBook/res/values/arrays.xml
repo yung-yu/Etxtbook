@@ -20,9 +20,8 @@
         <item>背景圖片</item>
     </string-array>
     <string-array name="clear_select">
-        <item>初始化狀態(包含文字大小和背景)</item>
-        <item>清空所有書本資料</item>
         <item>刪除書本(選取模式)</item>
+        <item>清空所有書本資料</item>
     </string-array>
         <string-array name="screen_select">
         <item>視窗模式</item>

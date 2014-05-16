@@ -94,12 +94,41 @@ public class TurnBook extends PageWidget{
 
 		});
 	}
-	public boolean prePage(){	
+	public boolean prePage(boolean isShowAnim){	
 		if(pagefactory.isfirstPage()){
 			if(sonBookChangeListener!=null)
 				sonBookChangeListener.onFirstIndex();
 			return false;
 		}
+		if(isShowAnim)
+		{
+			abortAnimation();
+			//計算拖拽點對應的拖拽角
+			calcCornerXY(20, 20);
+			getmTouch().x = 20;
+			getmTouch().y = 20;	
+			//將文字繪於當前頁
+			pagefactory.onDraw(mCurPageCanvas);
+			//是否從左邊翻向右邊
+			try {
+				//true，顯示上一頁					
+				pagefactory.prePage();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}						
+			if(pagefactory.isfirstPage()){
+				if(sonBookChangeListener!=null)
+					sonBookChangeListener.onFirstIndex();
+				return false;
+			}
+			pagefactory.onDraw(mNextPageCanvas);
+			setBitmaps(mCurPageBitmap, mNextPageBitmap);
+			startAnimation(1000);
+			postInvalidate();
+		}
+		else
+		{
 			//是否從左邊翻向右邊		
 			try {
 				//true，顯示上一頁					
@@ -111,25 +140,56 @@ public class TurnBook extends PageWidget{
 			}						
 			pagefactory.onDraw(mCurPageCanvas);
 			setBitmaps(mCurPageBitmap, mCurPageBitmap);
-			 postInvalidate();
+			postInvalidate();
+		}
 			  return true;
 	}
-	public boolean NextPage(){	 		  
+	public boolean NextPage(boolean isShowAnim){	 		  
 		if(pagefactory.islastPage()){
 			if(sonBookChangeListener!=null)
 				sonBookChangeListener.onFinalIndex();
 			return false; 
 		}
-		try {
-			//false，顯示下一頁							
-			pagefactory.nextPage();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		if(isShowAnim)
+		{
+			abortAnimation();
+			//計算拖拽點對應的拖拽角
+			calcCornerXY(getWidth()-20, 20);
+			getmTouch().x = getWidth()-20;
+			getmTouch().y = 20;	
+			//將文字繪於當前頁
+			pagefactory.onDraw(mCurPageCanvas);
+			//是否從左邊翻向右邊
+			try {
+				//true，顯示上一頁					
+				pagefactory.nextPage();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}						
+			if(pagefactory.isfirstPage()){
+				if(sonBookChangeListener!=null)
+					sonBookChangeListener.onFirstIndex();
+				return false;
+			}
+			pagefactory.onDraw(mNextPageCanvas);
+			setBitmaps(mCurPageBitmap, mNextPageBitmap);
+			startAnimation(1000);
+			postInvalidate();
 		}
-		pagefactory.onDraw(mCurPageCanvas);
-		setBitmaps(mCurPageBitmap, mCurPageBitmap);	
-		postInvalidate();
+		else
+		{
+			try {
+				//false，顯示下一頁							
+				pagefactory.nextPage();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			pagefactory.onDraw(mCurPageCanvas);
+			setBitmaps(mCurPageBitmap, mCurPageBitmap);	
+			postInvalidate();
+		}
 		return true;
 	}
 	/**書頁背景*/

@@ -32,6 +32,10 @@ public class PageWidget extends View {
 
 	//PointF:PointF holds two float coordinates
 	PointF mTouch = new PointF(); // // 拖拽點
+	public PointF getmTouch() {
+		return mTouch;
+	}
+
 	PointF mBezierStart1 = new PointF(); // 貝塞爾曲線起始點
 	PointF mBezierControl1 = new PointF(); // 貝塞爾曲線控制點
 	PointF mBeziervertex1 = new PointF(); // 貝塞爾曲線頂點
@@ -633,7 +637,7 @@ public class PageWidget extends View {
 		}
 	}
 
-	private void startAnimation(int delayMillis) {
+	public void startAnimation(int delayMillis) {
 		int dx, dy;
 		// dx 水平方向滑動的距離，負值會使滾動向左滾動
 		// dy 垂直方向滑動的距離，負值會使滾動向上滾動

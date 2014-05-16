@@ -118,20 +118,20 @@ public class BookData {
 		}
 	}
     private void firstCreateDb(SQLiteDatabase db){
-    		Book item = new Book();
-    		item.setBookName("千稼喵物語");
-    		item.setBookPath(ASSATS_PATH+"demo1.txt");
-    		Calendar c = Calendar.getInstance();
-    		int date =Unity.getCurDate(c);
-    		int time =Unity.getCurTime(c);
-    		value = new ContentValues();
-    		value.put(Cloums.BOOK_NAME, item.getBookName());
-    		value.put(Cloums.BOOK_PATH, item.getBookPath());
-    		value.put(Cloums.CREATE_DATE, date);
-    		value.put(Cloums.CREATE_TIME, time);
-    		value.put(Cloums.UPDATE_DATE, date);
-    		value.put(Cloums.UPDATE_TIME, time);
-    		db.insert(Table.BOOK,null, value);
+//    		Book item = new Book();
+//    		item.setBookName("千稼喵物語");
+//    		item.setBookPath(ASSATS_PATH+"demo1.txt");
+//    		Calendar c = Calendar.getInstance();
+//    		int date =Unity.getCurDate(c);
+//    		int time =Unity.getCurTime(c);
+//    		value = new ContentValues();
+//    		value.put(Cloums.BOOK_NAME, item.getBookName());
+//    		value.put(Cloums.BOOK_PATH, item.getBookPath());
+//    		value.put(Cloums.CREATE_DATE, date);
+//    		value.put(Cloums.CREATE_TIME, time);
+//    		value.put(Cloums.UPDATE_DATE, date);
+//    		value.put(Cloums.UPDATE_TIME, time);
+//    		db.insert(Table.BOOK,null, value);
     }
 	private Cursor query(String table, String selection,String orderBy){
 		return msqlitHelper.getReadableDatabase().query(table, null, selection, null, null, null, orderBy);
