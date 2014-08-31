@@ -30,4 +30,6 @@
     <string name="setOnremoveMode">啟動清除模式!\n請點選想要刪除書本!</string>
     <string name="book_screen">畫面</string>
     <string name="book_status">初始化</string>
+    <string name="book_progress">進度</string>
+    <string name="alert_title_progress">選取進度</string>
 </resources>
