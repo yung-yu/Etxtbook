@@ -3,17 +3,14 @@ package com.android.ebook.ui;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
-import org.apache.http.protocol.HTTP;
-
 import net.margaritov.preference.colorpicker.ColorPickerDialog;
 
 import com.android.ebook.R;
-import com.android.ebook.bookturn.TurnBook;
 import com.android.ebook.data.BookData;
 import com.android.ebook.data.BookMark;
 import com.android.ebook.data.Unity;
 import com.android.ebook.data.sharePerferenceHelper;
-import com.android.ebook.unit.CustomToast;
+import com.android.mylibrary.bookturn.TurnBook;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
@@ -28,6 +25,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract.Colors;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -38,10 +36,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 public class BookActivity extends Activity{
 	private final String  BOOK_TEXT_SIZE= "BookTextSize";
@@ -62,10 +58,9 @@ public class BookActivity extends Activity{
 	private Bitmap myBitmap;
 	private ImageLoader mImageLoader;
 	private boolean isTable=false;
-	private String bookName;
+	private String bookname;
 	private int screenType;
     private Context context;
-    private int bookId;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -79,18 +74,17 @@ public class BookActivity extends Activity{
 					WindowManager.LayoutParams.FLAG_FULLSCREEN );
 		}
 		if(isTable){
-			requestWindowFeature(Window.FEATURE_ACTION_BAR);
+			//requestWindowFeature(Window.FEATURE_ACTION_BAR);
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}else{
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}
-        
 		parent = this;
 		dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		Bundle bd = getIntent().getExtras();
 		filePath = bd.getString("filepath");
-		bookName = bd.getString("bookname");
-		bookId = bd.getInt("bookid");
+		bookname = bd.getString("bookname");
 		initImageLoader();
 		mBookData = new BookData(this);
 		decode_array = parent.getResources().getStringArray(R.array.decoding_value);	    
@@ -166,22 +160,22 @@ public class BookActivity extends Activity{
 			@Override
 			public void onFirstIndex() {
 				// TODO Auto-generated method stub			   
-				CustomToast.CreateToast(parent, getString(R.string.book_start), Toast.LENGTH_SHORT);
+				Toast.makeText(parent, getString(R.string.book_start), Toast.LENGTH_SHORT).show();
 
 			}
 
 			@Override
 			public void onFinalIndex() {
 				// TODO Auto-generated method stub
-				CustomToast.CreateToast(parent, getString(R.string.book_end), Toast.LENGTH_SHORT);
+				Toast.makeText(parent, getString(R.string.book_end), Toast.LENGTH_SHORT).show();
 			}
 		});
-		mTurnBook.getBookPageFactory().setBookName(bookName);
+		mTurnBook.getBookPageFactory().setBookName(bookname);
 		mTurnBook.getBookPageFactory().setM_fontSize_forMsg(getResources().getDimension(R.dimen.txt_msg_textsize));
 		mTurnBook.setTextSize(sharePerferenceHelper.getIntent(this).getInt(BOOK_TEXT_SIZE, 30));
 		mTurnBook.setTextColor(sharePerferenceHelper.getIntent(this).getInt(BOOK_TEXT_COLOR, Color.WHITE));
-		encode = mBookData.getBookEncode(parent,bookId);
-		mBookMark = mBookData.getBookMark(parent,bookId);
+		encode = mBookData.getBookEncode(parent,filePath);
+		mBookMark = mBookData.getBookMark(parent,filePath);
 		mTurnBook.setDecoding(decode_array[encode]);
 	}
     /**初始化圖片載入設定*/
@@ -242,7 +236,7 @@ public class BookActivity extends Activity{
 			Calendar c = Calendar.getInstance();
 			mBookMark.setUpdate_date(Unity.getCurDate(c));
 			mBookMark.setUpdate_time(Unity.getCurTime(c));
-			mBookData.addBookTag(parent,bookId,mBookMark);
+			mBookData.addBookTag(parent,mBookMark,filePath);
 		}
 		else if(mBookMark.getBegin() != newbegin)
 		{
@@ -256,7 +250,7 @@ public class BookActivity extends Activity{
 			Calendar c = Calendar.getInstance();
 			mBookMark.setUpdate_date(Unity.getCurDate(c));
 			mBookMark.setUpdate_time(Unity.getCurTime(c));
-			mBookData.addBookTag(parent,bookId,mBookMark);
+			mBookData.addBookTag(parent,mBookMark,filePath);
 		}
 	}
   
@@ -306,7 +300,7 @@ public class BookActivity extends Activity{
 			showChangeBgDialog();
 			break;
 		case R.id.item6:
-			showProgressDialog();
+			showClearStatus();
 			break;
 		default:
 			break;
@@ -431,52 +425,6 @@ public class BookActivity extends Activity{
 		ab.show();
 	}
 	/**選擇編碼dialog*/
-    private  void showProgressDialog(){
-		AlertDialog.Builder ab = new AlertDialog.Builder( this);
-		ab.setTitle(R.string.alert_title_progress);
-		View view =LayoutInflater.from(this).inflate(R.layout.book_progress, null);
-		SeekBar mSeekBar = (SeekBar)view.findViewById(R.id.seekBar1);
-		final TextView mMsg = (TextView)view.findViewById(R.id.textView1);
-		mSeekBar.setMax(10000);
-		int progress = (int) (mTurnBook.getProgress()*10000);
-		mSeekBar.setProgress(progress);
-		float tmp = Float.valueOf(progress)/100f;
-		mMsg.setText(getResources().getString(R.string.book_progress)+" : "+new DecimalFormat("00.00").format(tmp));
-		ab.setView(view);
-		mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress,
-					boolean fromUser) {
-				// TODO Auto-generated method stub
-				float tmp = Float.valueOf(progress)/100f;
-				mTurnBook.setProgress(tmp);
-				mMsg.setText(getResources().getString(R.string.book_progress)+" : "+new DecimalFormat("00.00").format(tmp));
-			}
-		});
-		ab.setPositiveButton(R.string.alert_cancel, new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-				dialog.cancel();
-			}
-		});
-		ab.show();
-	}
-	/**選擇編碼dialog*/
     private  void showDecodeDialog(){
 		AlertDialog.Builder ab = new AlertDialog.Builder( this);
 		ab.setTitle(R.string.alert_title_encode);
@@ -485,7 +433,7 @@ public class BookActivity extends Activity{
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
-				mBookData.updateBookEncode(parent,bookId, which);
+				mBookData.updateBookEncode(parent,filePath, which);
 				mTurnBook.setDecoding(decode_array[which]);
 				encode = which;
 				dialog.cancel();

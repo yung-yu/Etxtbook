@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	
 	<!-- App -->
     <string name="hello">Hello World, Main!</string>
     <string name="app_name">ColorPickerPreference</string>
@@ -19,5 +18,4 @@
     <string name="color3_summary">picker with alpha slider</string>
     <string name="color4_title">Color 4</string>
     <string name="color4_summary">color set with HEX code in xml</string>
-
 </resources>

@@ -64,6 +64,7 @@
         android:numColumns="3"
         android:scrollbars="none"
         android:stretchMode="columnWidth" >
+
     </GridView>
 
     <LinearLayout
@@ -72,6 +73,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:orientation="horizontal" >
-    </LinearLayout>
+        android:orientation="horizontal" />
+
 </RelativeLayout>
