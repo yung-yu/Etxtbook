@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/bg" >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/file_back_widthheight"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/bt_back"
+            android:background="@drawable/blackboard"
+            android:ellipsize="start"
+            android:gravity="center|left"
+            android:paddingLeft="@dimen/bookitem_padding_left"
+            android:paddingRight="@dimen/bookitem_padding_right"
+            android:singleLine="true"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/title_textsize" />
+
+        <ImageView
+            android:id="@+id/bt_back"
+            android:layout_width="@dimen/file_back_widthheight"
+            android:layout_height="@dimen/file_back_widthheight"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/back"
+            android:scaleType="matrix" />
+    </RelativeLayout>
+<ListView 
+    android:id="@android:id/list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@color/bg"
+    android:overScrollMode="never"
+    android:divider="@drawable/desk_top"/>
+    
+</LinearLayout>

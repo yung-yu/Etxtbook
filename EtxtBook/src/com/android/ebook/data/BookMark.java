@@ -1,11 +1,18 @@
 package com.android.ebook.data;
 
 public class BookMark {
-    private  int begin;
+	private  int bookId; 
+	private  int begin;
     private  String content;
     private  float Percent;
     private  int update_date;
     private  int update_time;
+    public int getBookId() {
+		return bookId;
+	}
+	public void setBookId(int bookId) {
+		this.bookId = bookId;
+	}
 	public int getUpdate_time() {
 		return update_time;
 	}

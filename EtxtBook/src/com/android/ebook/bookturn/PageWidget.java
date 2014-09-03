@@ -1,4 +1,4 @@
-    package com.android.mylibrary.bookturn;
+    package com.android.ebook.bookturn;
 
 
 import android.annotation.SuppressLint;
@@ -227,12 +227,13 @@ public class PageWidget extends View {
 			//是否觸發翻頁
 			if (canDragOvear()) {
 				startAnimation(1200);
+				
 			} else {
 				mTouch.x = mCornerX - 0.09f;//如果不能翻頁就讓mTouch返回沒有靜止時的狀態
 				mTouch.y = mCornerY - 0.09f;//- 0.09f是防止mTouch = 800 或mTouch= 0 ,在這些值時會出現BUG
 			}
 
-			this.postInvalidate();
+			this.postInvalidate();		
 		}
 		// return super.onTouchEvent(event);
 		return true;
@@ -666,7 +667,7 @@ public class PageWidget extends View {
 	public boolean canDragOvear() {
 		//設置開始翻頁的條件
 		//		if (mTouchToCornerDis > mWidth / 10)
-		if (mTouchToCornerDis>1)
+		if (mTouchToCornerDis>mWidth/5)
 			return true;
 		return false;
 	}

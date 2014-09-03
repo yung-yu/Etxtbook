@@ -1,17 +1,17 @@
-﻿package com.android.mylibrary.bookturn;
+﻿package com.android.ebook.bookturn;
 
 import java.io.IOException;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 
+
 @SuppressLint("WrongCall")
-public class TurnBook extends PageWidget{
+public class TurnBook extends PageWidget {
 	Bitmap mCurPageBitmap, mNextPageBitmap;
 	Canvas mCurPageCanvas, mNextPageCanvas;
 	BookPageFactory pagefactory;
@@ -67,6 +67,7 @@ public class TurnBook extends PageWidget{
 								return false;
 							}
 							pagefactory.onDraw(mNextPageCanvas);
+							setBitmaps(mNextPageBitmap, mCurPageBitmap);
 		
 						} else {
 							try {
@@ -82,8 +83,9 @@ public class TurnBook extends PageWidget{
 								return false;
 							}
 							pagefactory.onDraw(mNextPageCanvas);
+							setBitmaps(mCurPageBitmap, mNextPageBitmap);
 						}
-						setBitmaps(mCurPageBitmap, mNextPageBitmap);
+						
 					}
                  
 					 ret = doTouchEvent(e);
@@ -93,6 +95,7 @@ public class TurnBook extends PageWidget{
 			}
 
 		});
+
 	}
 	public boolean prePage(boolean isShowAnim){	
 		if(pagefactory.isfirstPage()){
@@ -173,7 +176,7 @@ public class TurnBook extends PageWidget{
 				return false;
 			}
 			pagefactory.onDraw(mNextPageCanvas);
-			setBitmaps(mCurPageBitmap, mNextPageBitmap);
+			setBitmaps(mCurPageBitmap, mCurPageBitmap);
 			startAnimation(1000);
 			postInvalidate();
 		}
@@ -192,6 +195,20 @@ public class TurnBook extends PageWidget{
 		}
 		return true;
 	}
+   public float getProgress(){
+	   if(pagefactory!=null)
+		   return pagefactory.getfPercent();
+	   return 0;
+   }
+   public void setProgress(float progress){
+	   if(pagefactory!=null){
+		   pagefactory.setPoregress(progress);
+           pagefactory.getM_lines().clear(); 
+           pagefactory.onDraw(mCurPageCanvas);
+           setBitmaps(mCurPageBitmap, mCurPageBitmap);	
+           postInvalidate();
+	   }
+   }
 	/**書頁背景*/
    public void setBookBackgroundBitmap(Bitmap bmp){
 	   if(pagefactory!=null){
@@ -222,7 +239,7 @@ public class TurnBook extends PageWidget{
            pagefactory.setM_mbBufBegin(beginIndex);  
            pagefactory.getM_lines().clear(); 
            pagefactory.onDraw(mCurPageCanvas);  
-           pagefactory.onDraw(mNextPageCanvas);
+           setBitmaps(mCurPageBitmap, mCurPageBitmap);	
            postInvalidate();
 	   }
    }

@@ -9,14 +9,17 @@
         android:targetSdkVersion="18"
          />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" /> 
+    <uses-permission android:name="android.permission.READ_USER_DICTIONARY" /> 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" 
         >
+      
+        
         <activity
             android:name="com.android.ebook.MainActivity"
             android:label="@string/app_name"
@@ -31,8 +34,7 @@
             android:name="com.android.ebook.ui.BookActivity"
             android:theme="@android:style/Theme.Black" >
         </activity>
-         <activity android:name="com.google.ads.AdActivity"
-              android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
+         
     </application>
 
 </manifest>

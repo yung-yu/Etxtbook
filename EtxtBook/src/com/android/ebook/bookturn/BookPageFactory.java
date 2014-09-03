@@ -1,5 +1,5 @@
 
-package com.android.mylibrary.bookturn;
+package com.android.ebook.bookturn;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,7 +9,9 @@ import java.io.UnsupportedEncodingException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,11 +20,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.FontMetrics;
+import android.util.Log;
 
 
 @SuppressLint("DrawAllocation")
 public class BookPageFactory{
-    //private final String TAGLOG = "BOOK";
+	//private final String TAGLOG = "BOOK";
 	private File book_file = null;
 	private MappedByteBuffer m_mbBuf = null;
 	private int m_mbBufLen = 0;
@@ -32,23 +35,23 @@ public class BookPageFactory{
 	private Bitmap m_book_bg = null;
 	private int mWidth;
 	private int mHeight;
-	private Vector<String> m_lines = new Vector<String>();
+	private List<String> m_lines = new ArrayList<String>();
 	private float m_fontSize = 30;
-     float m_fontSize_forMsg = 20;
+	float m_fontSize_forMsg = 20;
 
 	private int m_textColor = Color.BLACK;
 	private int m_backColor = 0xffffffee; // 背景顏色
 	private int marginWidth = 40; // 左右與邊緣的距離
-	
+
 	private int marginHeight = 40; // 上下與邊緣的距離
-	
+
 	private int mLineCount; // 每頁可以顯示的行數
 	private float mVisibleHeight; // 繪制內容的寬
 	private float mVisibleWidth; // 繪制內容的寬
 	private boolean m_isfirstPage,m_islastPage;
 	String strPercent = "";
 	// private int m_nLineSpaceing = 5;
-    private int delay_lineCount = 0;
+	private int delay_lineCount = 0;
 
 	private Paint mPaint;
 	private Paint mPaint_formsg;
@@ -68,61 +71,87 @@ public class BookPageFactory{
 		setM_fontSize_forMsg(30);
 		setM_fontSize(30);// 可顯示的行數
 	}
-	
+
 	public void openBook(Context context,String fileName){
 		try{
 			openBook(getRobotCacheFile(context,fileName).getAbsolutePath());
 		}catch(IOException e){
-			
+
 		}
 	}
-	  private File getRobotCacheFile(Context context,String fileName) throws IOException {
-	        File cacheFile = new File(context.getCacheDir(), fileName);
-	        try {
-	            InputStream inputStream = context.getAssets().open(fileName);
-	            try {
-	                FileOutputStream outputStream = new FileOutputStream(cacheFile);
-	                try {
-	                    byte[] buf = new byte[1024];
-	                    int len;
-	                    while ((len = inputStream.read(buf)) > 0) {
-	                        outputStream.write(buf, 0, len);
-	                    }
-	                } finally {
-	                    outputStream.close();
-	                }
-	            } finally {
-	                inputStream.close();
-	            }
-	        } catch (IOException e) {
-	            throw new IOException("Could not open robot png", e);
-	        }
-	        return cacheFile;
-	    }
-	  @SuppressWarnings("resource")
+	private File getRobotCacheFile(Context context,String fileName) throws IOException {
+		File cacheFile = new File(context.getCacheDir(), fileName);
+		try {
+			InputStream inputStream = context.getAssets().open(fileName);
+			try {
+				FileOutputStream outputStream = new FileOutputStream(cacheFile);
+				try {
+					byte[] buf = new byte[1024];
+					int len;
+					while ((len = inputStream.read(buf)) > 0) {
+						outputStream.write(buf, 0, len);
+					}
+				} finally {
+					outputStream.close();
+				}
+			} finally {
+				inputStream.close();
+			}
+		} catch (IOException e) {
+			throw new IOException("Could not open robot png", e);
+		}
+		return cacheFile;
+	}
+	@SuppressWarnings("resource")
 	public void openBook(String strFilePath){
-		  try {
-			  book_file = new File(strFilePath);
-			  long lLen = book_file.length();
-			  m_mbBufLen = (int) lLen;
+		try {
+			book_file = new File(strFilePath);
+			long lLen = book_file.length();
+			m_mbBufLen = (int) lLen;
 
-			  /*
-			   * 內存映射文件能讓你創建和修改那些因為太大而無法放入內存的文件。有了內存映射文件，你就可以認為文件已經全部讀進了內存，
-			   * 然後把它當成一個非常大的數組來訪問。這種解決辦法能大大簡化修改文件的代碼。 
-			   * 
-			   * fileChannel.map(FileChannel.MapMode mode, long position, long size)將此通道的文件區域直接映射到內存中。但是，你必
-			   * 須指明，它是從文件的哪個位置開始映射的，映射的範圍又有多大
-			   */
-			  FileChannel fc=new RandomAccessFile(book_file, "r").getChannel();
+			/*
+			 * 內存映射文件能讓你創建和修改那些因為太大而無法放入內存的文件。有了內存映射文件，你就可以認為文件已經全部讀進了內存，
+			 * 然後把它當成一個非常大的數組來訪問。這種解決辦法能大大簡化修改文件的代碼。 
+			 * 
+			 * fileChannel.map(FileChannel.MapMode mode, long position, long size)將此通道的文件區域直接映射到內存中。但是，你必
+			 * 須指明，它是從文件的哪個位置開始映射的，映射的範圍又有多大
+			 */
+			FileChannel fc=new RandomAccessFile(book_file, "r").getChannel();
 
-			  //文件通道的可讀可寫要建立在文件流本身可讀寫的基礎之上  
-			  m_mbBuf =fc.map(FileChannel.MapMode.READ_ONLY, 0, lLen);
-		  }catch(IOException e){
+			//文件通道的可讀可寫要建立在文件流本身可讀寫的基礎之上  
+			m_mbBuf =fc.map(FileChannel.MapMode.READ_ONLY, 0, lLen);
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+	}
+	public void setPoregress(float progress){
+		
+		if(progress<100)
+		{
+			int length =  m_mbBufLen;
+			int start = (int) (length*(progress/100));
+			if (start <= 0) {
+				//第一頁
+				m_isfirstPage=true;
+				m_islastPage =false;
+			}else if (start >= m_mbBufLen) {
+				
+				m_islastPage=true;
+				m_isfirstPage = false;
+			}
+			else
+			{ 
+				m_isfirstPage=false;
+				m_islastPage =false;
+				byte[] tmp = readParagraphBack(start);
+				 start-=tmp.length;
+			}
+			 
+			m_mbBufBegin = start;
+			m_mbBufEnd = start;
+		}
+	}
 
-		  }
-	  }
-
-	
 	protected byte[] readParagraphBack(int nFromPos) {
 		int nEnd = nFromPos;
 		int i;
@@ -210,10 +239,67 @@ public class BookPageFactory{
 		}
 		return buf;
 	}
+	public void testAllString(){
 
-	protected Vector<String> pageDown() {
 		String strParagraph = "";
-		Vector<String> lines = new Vector<String>();
+		int m_mbBufEnd = 0;
+		int m_mbBufStart = 0;
+		List<String> lines = new ArrayList<String>();
+		while ( m_mbBufEnd < m_mbBufLen) {
+			if(lines.size() < mLineCount){
+				lines.clear();
+				Log.d("book",m_mbBufStart+":"+m_mbBufEnd);
+				m_mbBufStart = m_mbBufEnd;
+			}
+			byte[] paraBuf = readParagraphForward(m_mbBufEnd); // 讀取一個段落
+			m_mbBufEnd += paraBuf.length;//結束位置後移paraBuf.length
+			try {
+				strParagraph = new String(paraBuf, m_strCharsetName);//通過decode指定的編碼格式將byte[]轉換為字符串			
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			String strReturn = "";
+
+			//去除將字符串中的特殊字符
+			if (strParagraph.indexOf("\r\n") != -1) {
+				strReturn = "\r\n";
+				strParagraph = strParagraph.replaceAll("\r\n", "");
+			} else if (strParagraph.indexOf("\n") != -1) {
+				strReturn = "\n";
+				strParagraph = strParagraph.replaceAll("\n", "");
+			}
+
+			if (strParagraph.length() == 0) {
+				lines.add(strParagraph);
+			}
+			while (strParagraph.length() > 0) {
+				//計算每行可以顯示多少個字符
+				//獲益匪淺
+				int nSize = mPaint.breakText(strParagraph, true, mVisibleWidth,null);
+				nSize = nSize<=strParagraph.length()?nSize:strParagraph.length();
+				lines.add(strParagraph.substring(0, nSize));
+				strParagraph = strParagraph.substring(nSize);//截取從nSize開始的字符串
+				if (lines.size() >= mLineCount) {
+					break;
+				}
+			}
+			//當前頁沒顯示完
+			if (strParagraph.length() != 0) {
+				try {
+					m_mbBufEnd -= (strParagraph + strReturn).getBytes(m_strCharsetName).length;
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}		
+		lines = null;
+	}
+	protected List<String> pageDown() {
+		String strParagraph = "";
+		List<String> lines = new ArrayList<String>();
 		while (lines.size() < mLineCount && m_mbBufEnd < m_mbBufLen) {
 			byte[] paraBuf = readParagraphForward(m_mbBufEnd); // 讀取一個段落
 			m_mbBufEnd += paraBuf.length;//結束位置後移paraBuf.length
@@ -264,10 +350,10 @@ public class BookPageFactory{
 	protected void pageUp() {
 		if (m_mbBufBegin < 0)
 			m_mbBufBegin = 0;
-		Vector<String> lines = new Vector<String>();
+		List<String> lines = new ArrayList<String>();
 		String strParagraph = "";
 		while (lines.size() < mLineCount && m_mbBufBegin > 0) {
-			Vector<String> paraLines = new Vector<String>();
+			List<String> paraLines = new ArrayList<String>();
 			byte[] paraBuf = readParagraphBack(m_mbBufBegin);
 			m_mbBufBegin -= paraBuf.length;
 			try {
@@ -307,18 +393,30 @@ public class BookPageFactory{
 			//第一頁
 			m_mbBufBegin = 0;
 			m_isfirstPage=true;
+			m_islastPage =false;
 			return;
-		}else m_isfirstPage=false;
-		m_lines.clear();//Removes all elements from this vector, leaving it empty.
+		}
+		else
+		{ 
+			m_isfirstPage=false;
+			m_islastPage =false;
+		}
+		m_lines.clear();//Removes all elements from this List, leaving it empty.
 		pageUp();
 		m_lines = pageDown();
 	}
-	
+
 	public void nextPage() throws IOException {
 		if (m_mbBufEnd >= m_mbBufLen) {
 			m_islastPage=true;
+			m_isfirstPage = false;
 			return;
-		}else m_islastPage=false;
+		}
+		else
+		{ 
+			m_isfirstPage=false;
+			m_islastPage =false;
+		}
 		m_lines.clear();
 		m_mbBufBegin = m_mbBufEnd;
 		m_lines = pageDown();
@@ -343,14 +441,13 @@ public class BookPageFactory{
 			}
 		}
 		//計算百分比（不包括當前頁）並格式化
-		fPercent = (float) (m_mbBufBegin * 1.0 / m_mbBufLen);
+		fPercent = (float) (m_mbBufEnd * 1.0 / m_mbBufLen);
 		DecimalFormat df = new DecimalFormat("#0.0#");
 		strPercent = df.format(fPercent * 100) + "%";
 		mPaint_formsg.setTextSize(m_fontSize_forMsg);
 		//計算999.9%所占的像素寬度	
 		int nPercentWidth = (int) mPaint.measureText(strPercent) + 1;
 		mPaint_formsg.setTextAlign(Align.RIGHT);
-		int th = (int) (mPaint_formsg.descent() - mPaint_formsg.ascent());
 		float msg_y = mHeight-m_fontSize_forMsg;
 		c.drawText(strPercent, mWidth, msg_y , mPaint_formsg);
 		mPaint_formsg.setTextAlign(Align.LEFT);
@@ -373,11 +470,11 @@ public class BookPageFactory{
 	public void setBookName(String bookName) {
 		BookName = bookName;
 	}
-     /**設定書頁背景*/
+	/**設定書頁背景*/
 	public void setBgBitmap(Bitmap BG) {
 		m_book_bg = BG;
 	}
-	 /**開始頁面*/
+	/**開始頁面*/
 	public boolean isfirstPage() {
 		return m_isfirstPage;
 	}
@@ -385,7 +482,7 @@ public class BookPageFactory{
 	public boolean islastPage() {
 		return m_islastPage;
 	}
-    
+
 	/**設定編碼*/
 	public void setM_strCharsetName(String m_strCharsetName) {
 		this.m_strCharsetName = m_strCharsetName;
@@ -400,7 +497,7 @@ public class BookPageFactory{
 		this.m_fontSize = m_fontSize;
 		this.mPaint.setTextSize(m_fontSize);
 		FontMetrics fontMetrics = mPaint.getFontMetrics();
-	    int textheight = (int) (fontMetrics.descent-fontMetrics.ascent+fontMetrics.leading)+1;
+		int textheight = (int) (fontMetrics.descent-fontMetrics.ascent+fontMetrics.leading)+1;
 		this.mVisibleWidth = this.mWidth - this.marginWidth * 2;
 		this.mVisibleHeight = this.mHeight - this.marginHeight * 2;
 		this.mLineCount = (int) (this.mVisibleHeight / textheight)-delay_lineCount;
@@ -448,11 +545,11 @@ public class BookPageFactory{
 		this.m_mbBufBegin = m_mbBufBegin;
 	}
 	/**當前內文*/
-	public Vector<String> getM_lines() {
+	public List<String> getM_lines() {
 		return m_lines;
 	}
-    /**當前內文*/
-	public void setM_lines(Vector<String> m_lines) {
+	/**當前內文*/
+	public void setM_lines(List<String> m_lines) {
 		this.m_lines = m_lines;
 	}
 	/**當前進度*/
