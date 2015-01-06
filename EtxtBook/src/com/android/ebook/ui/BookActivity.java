@@ -1,5 +1,6 @@
 package com.android.ebook.ui;
 
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
@@ -19,14 +20,17 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 
 import android.R.color;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
@@ -35,6 +39,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.SeekBar;
@@ -44,6 +49,7 @@ import android.widget.Toast;
 
 
 public class BookActivity extends Activity{
+	
 	private final String  BOOK_TEXT_SIZE= "BookTextSize";
 	private final String  BOOK_TEXT_COLOR= "BookTextCOLOR";
 	private final String  BOOK_BG_TYPE= "Bookbgtype";
@@ -64,8 +70,8 @@ public class BookActivity extends Activity{
 	private boolean isTable=false;
 	private String bookName;
 	private int screenType;
-    private Context context;
-    private int bookId;
+	private Context context;
+	private int bookId;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -74,16 +80,18 @@ public class BookActivity extends Activity{
 		context = this;
 		screenType = sharePerferenceHelper.getIntent(this).getInt(BOOK_SCREEN, 0);
 		if(screenType!=0)
-		{ 	
+		{ 
 			getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, 
 					WindowManager.LayoutParams.FLAG_FULLSCREEN );
 		}
-		if(isTable){
-			requestWindowFeature(Window.FEATURE_ACTION_BAR);
-		}else{
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
-		}
-        
+		boolean ishasNavBar = hasNavBar(this);
+        if(isTable||ishasNavBar){
+        		requestWindowFeature(Window.FEATURE_ACTION_BAR);
+        }else{
+        		requestWindowFeature(Window.FEATURE_NO_TITLE);
+        }
+
+
 		parent = this;
 		dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -95,7 +103,12 @@ public class BookActivity extends Activity{
 		mBookData = new BookData(this);
 		decode_array = parent.getResources().getStringArray(R.array.decoding_value);	    
 		int magin = (int) getResources().getDimension(R.dimen.bookPage_magin); 
-		mTurnBook = new TurnBook(this, dm.widthPixels,screenType==0?dm.heightPixels-getStatusBarHeight():dm.heightPixels,magin,magin);	
+	    int width  = dm.widthPixels;
+	    int height = dm.heightPixels;
+	    height = screenType==0? height - getStatusBarHeight():height;
+	    height = ishasNavBar? height - getnavigation_bar_height():height;
+	    
+		mTurnBook = new TurnBook(this,width,height,magin,magin);	
 		setContentView(mTurnBook);
 		mTurnBook.setVisibility(View.INVISIBLE);
 		new Thread(new Runnable() {
@@ -142,8 +155,48 @@ public class BookActivity extends Activity{
 		if(mTurnBook != null)
 			mTurnBook.recycle();
 	}
-	/**¨ú±o¤W¼h°T®§¦C°ª«×*/
-    private  int getStatusBarHeight() { 
+	private int getnavigation_bar_height(){
+		Resources resources = context.getResources();
+		int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
+		if (resourceId > 0) {
+		    return resources.getDimensionPixelSize(resourceId);
+		}
+		return 0;
+
+	}
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+	private boolean hasNavBar(Context context) {
+		Resources res = context.getResources();
+		int resourceId = res.getIdentifier("config_showNavigationBar", 
+				"bool","android");
+		if (resourceId != 0) {
+			boolean hasNav = res.getBoolean(resourceId);
+			String sNavBarOverride = null;
+			if (Build.VERSION.SDK_INT >Build.VERSION_CODES.JELLY_BEAN_MR2) {
+				try {
+					Class c = Class.forName("android.os.SystemProperties");
+					Method m = c.getDeclaredMethod("get", String.class);
+					m.setAccessible(true);
+					sNavBarOverride = (String) m.invoke(null,"qemu.hw.mainkeys");
+				} catch (Throwable e) {
+					sNavBarOverride = null;
+				}
+			}
+
+			// check override flag (see static block)
+			if ("1".equals(sNavBarOverride)) {
+				hasNav = false;
+			} else if ("0".equals(sNavBarOverride)) {
+				hasNav = true;
+			}
+			return hasNav;
+		} else { // fallback
+			return !ViewConfiguration.get(context).hasPermanentMenuKey();
+		}
+	}
+
+	/**ï¿½ï¿½oï¿½Wï¿½hï¿½Tï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½*/
+	private  int getStatusBarHeight() { 
 		int result = 0;
 		int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
 		if (resourceId > 0) {
@@ -151,8 +204,8 @@ public class BookActivity extends Activity{
 		} 
 		return result;
 	} 
-	/**ªì©l¤Æ*/ 
-    private  void initBook(){
+	/**ï¿½ï¿½lï¿½ï¿½*/ 
+	private  void initBook(){
 		setBookBg();
 		if(filePath.startsWith(BookData.ASSATS_PATH))
 			mTurnBook.setBookFile(filePath.substring(BookData.ASSATS_PATH.length()), true);
@@ -184,7 +237,7 @@ public class BookActivity extends Activity{
 		mBookMark = mBookData.getBookMark(parent,bookId);
 		mTurnBook.setDecoding(decode_array[encode]);
 	}
-    /**ªì©l¤Æ¹Ï¤ù¸ü¤J³]©w*/
+	/**ï¿½ï¿½lï¿½Æ¹Ï¤ï¿½ï¿½Jï¿½]ï¿½w*/
 	private  void initImageLoader(){
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
 		.discCacheFileCount(1)
@@ -194,8 +247,8 @@ public class BookActivity extends Activity{
 		mImageLoader.init(config);
 
 	}
-	/**³]©w®Ñ¥»­I´º*/
-    private  void setBookBg(){
+	/**ï¿½]ï¿½wï¿½Ñ¥ï¿½ï¿½Iï¿½ï¿½*/
+	private  void setBookBg(){
 		if(mTurnBook == null)
 			return;
 		int type = sharePerferenceHelper.getIntent(this).getInt(BOOK_BG_TYPE, 0);
@@ -227,7 +280,7 @@ public class BookActivity extends Activity{
 		}
 
 	}
-    /**·s¼W®ÑÅÒ*/
+	/**ï¿½sï¿½Wï¿½ï¿½ï¿½ï¿½*/
 	private  void addBookTag(){
 		int newbegin = mTurnBook.getBookPageFactory().getM_mbBufBegin();
 		if(mBookMark == null)
@@ -259,17 +312,17 @@ public class BookActivity extends Activity{
 			mBookData.addBookTag(parent,bookId,mBookMark);
 		}
 	}
-  
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
-		// ¦³¿ï¾ÜÀÉ®×
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É®ï¿½
 		if(resultCode == RESULT_OK)
 		{
 			if ( requestCode == RESULT_LOAD_IMAGE )
 			{
-				// ¨ú±oÀÉ®×ªº Uri
+				// ï¿½ï¿½oï¿½É®×ªï¿½ Uri
 				Uri uri = data.getData();
 
 				if( uri != null )
@@ -360,8 +413,8 @@ public class BookActivity extends Activity{
 		}
 		return super.dispatchKeyEvent(event);
 	}
-	/**¿Ã¹õ³]©wDialog*/
-    private  void showScreenDilog(){
+	/**ï¿½Ã¹ï¿½ï¿½]ï¿½wDialog*/
+	private  void showScreenDilog(){
 		int type = sharePerferenceHelper.getIntent(this).getInt(BOOK_SCREEN, 0);
 		AlertDialog.Builder ab = new AlertDialog.Builder( this);
 		ab.setTitle(R.string.alert_title_pgbg);
@@ -388,7 +441,7 @@ public class BookActivity extends Activity{
 		});
 		ab.show();
 	}
-    /**³]©w­I´ºdialog*/
+	/**ï¿½]ï¿½wï¿½Iï¿½ï¿½dialog*/
 	private  void showChangeBgDialog(){
 		int type = sharePerferenceHelper.getIntent(this).getInt(BOOK_BG_TYPE, 0);
 		AlertDialog.Builder ab = new AlertDialog.Builder( this);
@@ -410,7 +463,7 @@ public class BookActivity extends Activity{
 				case 2:
 					Intent intent = new Intent( Intent.ACTION_PICK );
 					intent.setType( "image/*" );
-					Intent destIntent = Intent.createChooser( intent, "¿ï¾ÜÀÉ®×" );
+					Intent destIntent = Intent.createChooser( intent, "ï¿½ï¿½ï¿½ï¿½É®ï¿½" );
 					startActivityForResult( destIntent,RESULT_LOAD_IMAGE );
 					break;
 
@@ -430,8 +483,8 @@ public class BookActivity extends Activity{
 		});
 		ab.show();
 	}
-	/**¿ï¾Ü½s½Xdialog*/
-    private  void showProgressDialog(){
+	/**ï¿½ï¿½Ü½sï¿½Xdialog*/
+	private  void showProgressDialog(){
 		AlertDialog.Builder ab = new AlertDialog.Builder( this);
 		ab.setTitle(R.string.alert_title_progress);
 		View view =LayoutInflater.from(this).inflate(R.layout.book_progress, null);
@@ -444,19 +497,19 @@ public class BookActivity extends Activity{
 		mMsg.setText(getResources().getString(R.string.book_progress)+" : "+new DecimalFormat("00.00").format(tmp));
 		ab.setView(view);
 		mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			
+
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void onStartTrackingTouch(SeekBar seekBar) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
@@ -476,8 +529,8 @@ public class BookActivity extends Activity{
 		});
 		ab.show();
 	}
-	/**¿ï¾Ü½s½Xdialog*/
-    private  void showDecodeDialog(){
+	/**ï¿½ï¿½Ü½sï¿½Xdialog*/
+	private  void showDecodeDialog(){
 		AlertDialog.Builder ab = new AlertDialog.Builder( this);
 		ab.setTitle(R.string.alert_title_encode);
 		ab.setSingleChoiceItems(getResources().getStringArray(R.array.decoding), encode, new DialogInterface.OnClickListener() {
@@ -501,7 +554,7 @@ public class BookActivity extends Activity{
 		});
 		ab.show();
 	}
-     /**³]©w­I´ºÃC¦âdialog */
+	/**ï¿½]ï¿½wï¿½Iï¿½ï¿½ï¿½Cï¿½ï¿½dialog */
 	private  void showbookbgColorDialog(){
 
 		int color = sharePerferenceHelper.getIntent(parent).getInt(BOOK_BG_COLOR,Color.WHITE);
@@ -521,8 +574,8 @@ public class BookActivity extends Activity{
 		mColorPickerDialog.setAlphaSliderVisible(true);
 		mColorPickerDialog.show();
 	}
-	/**³]©w¤å¦rÃC¦âdialog*/
-    private  void showTextColorDialog(){
+	/**ï¿½]ï¿½wï¿½ï¿½rï¿½Cï¿½ï¿½dialog*/
+	private  void showTextColorDialog(){
 		ColorPickerDialog mColorPickerDialog = new ColorPickerDialog(this,mTurnBook.getTextColor());
 		mColorPickerDialog.setTitle(R.string.alert_title_txtcolor);
 		mColorPickerDialog.setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
@@ -538,7 +591,7 @@ public class BookActivity extends Activity{
 		mColorPickerDialog.setAlphaSliderVisible(true);
 		mColorPickerDialog.show();
 	}
-    /**³]©w¤å¦r¤j¤pdialog*/
+	/**ï¿½]ï¿½wï¿½ï¿½rï¿½jï¿½pdialog*/
 	private void showDefineTextSizeDilog(){
 		LayoutInflater inflater=(LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View vi=inflater.inflate(R.layout.booktextsizecontrol, null);
