@@ -9,18 +9,18 @@ import android.content.SharedPreferences.Editor;
  * °¾¦n³]©w
  * @author andy.Li
  */ 
-public class sharePerferenceHelper{
+public class SharePerferenceHelper{
 
 	static SharedPreferences mSharedPreferences;
-	static sharePerferenceHelper msharePerferenceHelper;
+	static SharePerferenceHelper msharePerferenceHelper;
 
-	sharePerferenceHelper(Context mContext){
+	SharePerferenceHelper(Context mContext){
 		if(mSharedPreferences==null)
 			mSharedPreferences=mContext.getSharedPreferences("ebook", Context.MODE_PRIVATE);  
 	}
-	public static sharePerferenceHelper getIntent(Context mContext){
+	public static SharePerferenceHelper getIntent(Context mContext){
 		if(mSharedPreferences==null)
-			msharePerferenceHelper=new sharePerferenceHelper(mContext);
+			msharePerferenceHelper=new SharePerferenceHelper(mContext);
 		return msharePerferenceHelper;
 	}
 	@SuppressLint("CommitPrefEdits")

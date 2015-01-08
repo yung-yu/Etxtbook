@@ -1,12 +1,30 @@
 package com.android.ebook.data;
 
+import android.util.Log;
+
 public class BookMark {
+	private  int id;
 	private  int bookId; 
 	private  int begin;
     private  String content;
     private  float Percent;
-    private  int update_date;
+    private  String name;
+	private  int update_date;
     private  int update_time;
+    
+    public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getName() {
+		Log.d("book",name);
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
     public int getBookId() {
 		return bookId;
 	}

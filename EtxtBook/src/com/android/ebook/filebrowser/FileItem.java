@@ -4,18 +4,18 @@ package com.android.ebook.filebrowser;
 
 public class FileItem implements Comparable<FileItem>{
     private String name;
-    private long DataSize;
+    private long dataSize;
     private String date;
     private String path;
-    private String FileType;
+    private String fileType;
    
-	public FileItem(String n,long d, String dt, String p, String FileType)
+	public FileItem(String name,long dataSize, String date, String path, String fileType)
     {
-	    this.name = n;
-        this.DataSize = d;
-        this.date = dt;
-        this.path = p;
-        this.FileType = FileType;           
+	    this.name = name;
+        this.dataSize = dataSize;
+        this.date = date;
+        this.path = path;
+        this.fileType = fileType;           
     }
     public String getName()
     {
@@ -23,7 +23,7 @@ public class FileItem implements Comparable<FileItem>{
     }
     public long getDataSize()
     {
-            return DataSize;
+            return dataSize;
     }
     public String getDate()
     {
@@ -34,7 +34,7 @@ public class FileItem implements Comparable<FileItem>{
             return path;
     }
     public String getFileType() {
-		return FileType;
+		return fileType;
 	}
     public int compareTo(FileItem o) {
             if(this.name != null)

@@ -126,7 +126,7 @@ public class BookPageFactory{
 	}
 	public void setPoregress(float progress){
 		
-		if(progress<100)
+		if(progress<=100)
 		{
 			int length =  m_mbBufLen;
 			int start = (int) (length*(progress/100));
@@ -325,7 +325,6 @@ public class BookPageFactory{
 			}
 			while (strParagraph.length() > 0) {
 				//計算每行可以顯示多少個字符
-				//獲益匪淺
 				int nSize = mPaint.breakText(strParagraph, true, mVisibleWidth,null);
 				nSize = nSize<=strParagraph.length()?nSize:strParagraph.length();
 				lines.add(strParagraph.substring(0, nSize));

@@ -167,7 +167,7 @@ public class MainActivity extends Activity {
 					mBook.setBookPath(item.getPath());
 					if(!checkbookIsExists(mBook)){
 						Calendar c = Calendar.getInstance();
-						mBookData.addBook(context,mBook,Unity.getCurDate(c),Unity.getCurTime(c));
+						mBookData.addBook(mBook,Unity.getCurDate(c),Unity.getCurTime(c));
 						notifyDataSetChanged();
 						CustomToast.CreateToast(MainActivity.this, getString(R.string.addbook).replace("&s", item.getName()), Toast.LENGTH_SHORT);
 					}
@@ -192,7 +192,7 @@ public class MainActivity extends Activity {
 				// TODO Auto-generated method stub	
 
 				booklist.clear();
-				booklist.addAll(mBookData.getBookList(context));
+				booklist.addAll(mBookData.getBookList());
 				runOnUiThread( new Runnable() {
 					public void run() {
 						mBookAdapter.notifyDataSetChanged();
@@ -247,7 +247,7 @@ public class MainActivity extends Activity {
 	}
 	public void notifyDataSetChanged(){
 		booklist.clear();
-		booklist.addAll(mBookData.getBookList(context));
+		booklist.addAll(mBookData.getBookList());
 		mBookAdapter.notifyDataSetChanged();
 	}
 	private void showAppMsg(){
@@ -321,7 +321,7 @@ public class MainActivity extends Activity {
 				});
 				ab.show();
 	}
-	//�R���Ҧ��ѥ�
+	
 	private void ShowClearAllBookData(){
 		AlertDialog.Builder ab =new AlertDialog.Builder(this);
 		ab.setTitle(R.string.alert_tip_Alldelete);
@@ -330,9 +330,10 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
-				mBookData.clearAllData(context);
+				mBookData.clearAllData();
 				booklist.clear();
 				mBookAdapter.notifyDataSetChanged();
+				CustomToast.CreateToast(context, getString(R.string.delete_success), Toast.LENGTH_SHORT);
 				dialog.cancel();
 			}
 		});
@@ -363,9 +364,9 @@ public class MainActivity extends Activity {
 				if(removebooklist.size()>0)
 				{
 					for(int i=0;i<removebooklist.size();i++)
-						mBookData.deleteBook(context,removebooklist.get(i));	
+						mBookData.deleteBook(removebooklist.get(i));	
 					notifyDataSetChanged();
-					CustomToast.CreateToast(context, "", Toast.LENGTH_SHORT);
+					CustomToast.CreateToast(context, getString(R.string.delete_success), Toast.LENGTH_SHORT);
 				}	
 				else{
 					mBookAdapter.notifyDataSetChanged();

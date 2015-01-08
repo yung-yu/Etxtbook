@@ -32,4 +32,7 @@
     <string name="book_status">初始化</string>
     <string name="book_progress">進度</string>
     <string name="alert_title_progress">選取進度</string>
+    <string name="alert_title_selectImg">選取圖片:</string>
+    <string name="delete_success">刪除成功.</string>
+    <string name="delete_fail">刪除失敗.</string>
 </resources>

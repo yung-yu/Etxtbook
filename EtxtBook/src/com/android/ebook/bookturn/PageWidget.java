@@ -390,7 +390,7 @@ public class PageWidget extends View {
 		calcPoints();
 		drawCurrentPageArea(canvas, mCurPageBitmap, mPath0);
 		drawNextPageAreaAndShadow(canvas, mNextPageBitmap);
-		//drawCurrentPageShadow(canvas);
+		drawCurrentPageShadow(canvas);
 		drawCurrentBackArea(canvas, mCurPageBitmap);
 	
 	}

@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import com.android.ebook.R;
+import com.android.ebook.data.SharePerferenceHelper;
 import com.android.ebook.filebrowser.FileItem;
 import com.android.ebook.filebrowser.FileManager;
 
@@ -43,17 +44,7 @@ public class FileView {
 		tv = (TextView)convertView.findViewById(R.id.textView1);
 		fadapter = new FileAdapter(context);
 		lv.setAdapter(fadapter);
-//		lv.setOnItemClickListener(new OnItemClickListener() {
-//
-//			@Override
-//			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
-//					long arg3) {
-//				// TODO Auto-generated method stub
-//				if(position<fList.size())
-//					mfileChooser.analysisFile(fList.get(position));
-//			
-//			}
-//		});
+
 		mfileChooser = new FileManager();
 		mfileChooser.setOnFileChangedListener(new FileEvent());
 		bt_back.setOnClickListener(new View.OnClickListener() {
@@ -64,12 +55,20 @@ public class FileView {
 				mfileChooser.Back();
 			}
 		});
-		mfileChooser.init(new File("/"));
+		File f = new File(SharePerferenceHelper.getIntent(context).getString("fileSrc", "/"));
+		if(!f.exists()){
+			mfileChooser.init(new File("/"));
+		}
+		else{
+			mfileChooser.init(f);
+		
+		}
 
 	}
 	public View getView(){
 		return convertView;
 	}
+	
 	public void setFileSrc(File f){
 		if(mfileChooser!=null)
 			mfileChooser.init(f);
@@ -83,28 +82,28 @@ public class FileView {
 	private class FileEvent implements FileManager.FileChangedListener{
 
 		@Override
-		public void toDir(List<FileItem> dirList, List<FileItem> filelist,
-				final String Path) {
+		public void selectFile(FileItem item) {
 			// TODO Auto-generated method stub
+			if(sOnFileEventListener!=null)
+				sOnFileEventListener.selectedFile(item);
+
+		}
+
+		@Override
+		public void toDir(List<FileItem> fileList,final String path) {
+			// TODO Auto-generated method stub
+			SharePerferenceHelper.getIntent(mContext).setString("fileSrc",path);
 			fList.clear();
-			fList.addAll(dirList);
+			fList.addAll(fileList);
 			fadapter.notifyDataSetChanged();
 			((Activity) mContext).runOnUiThread(new Runnable() {
 
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					tv.setText(Path);
+					tv.setText(path);
 				}
 			});
-		}
-
-		@Override
-		public void selectFile(FileItem item) {
-			// TODO Auto-generated method stub
-			if(sOnFileEventListener!=null)
-				sOnFileEventListener.selectedFile(item);
-
 		}
 
 	}

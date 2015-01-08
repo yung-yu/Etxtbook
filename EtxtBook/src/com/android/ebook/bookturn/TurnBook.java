@@ -67,7 +67,7 @@ public class TurnBook extends PageWidget {
 								return false;
 							}
 							pagefactory.onDraw(mNextPageCanvas);
-							setBitmaps(mNextPageBitmap, mCurPageBitmap);
+							setBitmaps(mCurPageBitmap, mNextPageBitmap);
 		
 						} else {
 							try {
@@ -103,15 +103,7 @@ public class TurnBook extends PageWidget {
 				sonBookChangeListener.onFirstIndex();
 			return false;
 		}
-		if(isShowAnim)
-		{
 			abortAnimation();
-			//計算拖拽點對應的拖拽角
-			calcCornerXY(20, 20);
-			getmTouch().x = 20;
-			getmTouch().y = 20;	
-			//將文字繪於當前頁
-			pagefactory.onDraw(mCurPageCanvas);
 			//是否從左邊翻向右邊
 			try {
 				//true，顯示上一頁					
@@ -125,26 +117,10 @@ public class TurnBook extends PageWidget {
 					sonBookChangeListener.onFirstIndex();
 				return false;
 			}
-			pagefactory.onDraw(mNextPageCanvas);
-			setBitmaps(mCurPageBitmap, mNextPageBitmap);
-			startAnimation(1000);
-			postInvalidate();
-		}
-		else
-		{
-			//是否從左邊翻向右邊		
-			try {
-				//true，顯示上一頁					
-				pagefactory.prePage();
-				
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}						
 			pagefactory.onDraw(mCurPageCanvas);
 			setBitmaps(mCurPageBitmap, mCurPageBitmap);
 			postInvalidate();
-		}
+		
 			  return true;
 	}
 	public boolean NextPage(boolean isShowAnim){	 		  
@@ -153,15 +129,9 @@ public class TurnBook extends PageWidget {
 				sonBookChangeListener.onFinalIndex();
 			return false; 
 		}
-		if(isShowAnim)
-		{
+	
 			abortAnimation();
-			//計算拖拽點對應的拖拽角
-			calcCornerXY(getWidth()-20, 20);
-			getmTouch().x = getWidth()-20;
-			getmTouch().y = 20;	
-			//將文字繪於當前頁
-			pagefactory.onDraw(mCurPageCanvas);
+
 			//是否從左邊翻向右邊
 			try {
 				//true，顯示上一頁					
@@ -175,24 +145,10 @@ public class TurnBook extends PageWidget {
 					sonBookChangeListener.onFirstIndex();
 				return false;
 			}
-			pagefactory.onDraw(mNextPageCanvas);
-			setBitmaps(mCurPageBitmap, mCurPageBitmap);
-			startAnimation(1000);
-			postInvalidate();
-		}
-		else
-		{
-			try {
-				//false，顯示下一頁							
-				pagefactory.nextPage();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 			pagefactory.onDraw(mCurPageCanvas);
-			setBitmaps(mCurPageBitmap, mCurPageBitmap);	
+			setBitmaps(mCurPageBitmap, mCurPageBitmap);
 			postInvalidate();
-		}
+		
 		return true;
 	}
    public float getProgress(){
@@ -306,6 +262,7 @@ public class TurnBook extends PageWidget {
 		mCurPageCanvas = null;
 		mNextPageCanvas = null;
 		pagefactory  = null;
+		System.gc();
    }
 	
 }

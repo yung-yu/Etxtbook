@@ -13,7 +13,7 @@ import com.android.ebook.bookturn.TurnBook;
 import com.android.ebook.data.BookData;
 import com.android.ebook.data.BookMark;
 import com.android.ebook.data.Unity;
-import com.android.ebook.data.sharePerferenceHelper;
+import com.android.ebook.data.SharePerferenceHelper;
 import com.android.ebook.unit.CustomToast;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -78,7 +78,7 @@ public class BookActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		isTable = Unity.isTablet(this);
 		context = this;
-		screenType = sharePerferenceHelper.getIntent(this).getInt(BOOK_SCREEN, 0);
+		screenType = SharePerferenceHelper.getIntent(this).getInt(BOOK_SCREEN, 0);
 		if(screenType!=0)
 		{ 
 			getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, 
@@ -174,7 +174,7 @@ public class BookActivity extends Activity{
 			String sNavBarOverride = null;
 			if (Build.VERSION.SDK_INT >Build.VERSION_CODES.JELLY_BEAN_MR2) {
 				try {
-					Class c = Class.forName("android.os.SystemProperties");
+					Class<?> c = Class.forName("android.os.SystemProperties");
 					Method m = c.getDeclaredMethod("get", String.class);
 					m.setAccessible(true);
 					sNavBarOverride = (String) m.invoke(null,"qemu.hw.mainkeys");
@@ -231,13 +231,13 @@ public class BookActivity extends Activity{
 		});
 		mTurnBook.getBookPageFactory().setBookName(bookName);
 		mTurnBook.getBookPageFactory().setM_fontSize_forMsg(getResources().getDimension(R.dimen.txt_msg_textsize));
-		mTurnBook.setTextSize(sharePerferenceHelper.getIntent(this).getInt(BOOK_TEXT_SIZE, 30));
-		mTurnBook.setTextColor(sharePerferenceHelper.getIntent(this).getInt(BOOK_TEXT_COLOR, Color.WHITE));
-		encode = mBookData.getBookEncode(parent,bookId);
-		mBookMark = mBookData.getBookMark(parent,bookId);
+		mTurnBook.setTextSize(SharePerferenceHelper.getIntent(this).getInt(BOOK_TEXT_SIZE, 30));
+		mTurnBook.setTextColor(SharePerferenceHelper.getIntent(this).getInt(BOOK_TEXT_COLOR, Color.WHITE));
+		encode = mBookData.getBookEncode(bookId);
+		mBookMark = mBookData.getLastBookMark(bookId);
 		mTurnBook.setDecoding(decode_array[encode]);
 	}
-	/**��l�ƹϤ��J�]�w*/
+	
 	private  void initImageLoader(){
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
 		.discCacheFileCount(1)
@@ -247,23 +247,23 @@ public class BookActivity extends Activity{
 		mImageLoader.init(config);
 
 	}
-	/**�]�w�ѥ��I��*/
+	
 	private  void setBookBg(){
 		if(mTurnBook == null)
 			return;
-		int type = sharePerferenceHelper.getIntent(this).getInt(BOOK_BG_TYPE, 0);
+		int type = SharePerferenceHelper.getIntent(this).getInt(BOOK_BG_TYPE, 0);
 		switch (type) {
 		case 0:
 			mTurnBook.setBookBackgroundBitmap(null);
 			mTurnBook.setBookBackgroundColor(Color.BLACK);
 			break;
 		case 1:
-			int bg_color = sharePerferenceHelper.getIntent(this).getInt(BOOK_BG_COLOR,color.white);
+			int bg_color = SharePerferenceHelper.getIntent(this).getInt(BOOK_BG_COLOR,color.white);
 			mTurnBook.setBookBackgroundBitmap(null);
 			mTurnBook.setBookBackgroundColor(bg_color);
 			break;
 		case 2:
-			Uri myUri = Uri.parse( sharePerferenceHelper.getIntent(this).getString(BOOK_BG_PATH, ""));
+			Uri myUri = Uri.parse( SharePerferenceHelper.getIntent(this).getString(BOOK_BG_PATH, ""));
 			try{
 				Bitmap tmpBitmap = mImageLoader.loadImageSync(myUri.toString(),new ImageSize( dm.widthPixels, dm.heightPixels));
 				myBitmap = Bitmap.createScaledBitmap(tmpBitmap,  dm.widthPixels, dm.heightPixels, true);  
@@ -295,7 +295,7 @@ public class BookActivity extends Activity{
 			Calendar c = Calendar.getInstance();
 			mBookMark.setUpdate_date(Unity.getCurDate(c));
 			mBookMark.setUpdate_time(Unity.getCurTime(c));
-			mBookData.addBookTag(parent,bookId,mBookMark);
+			mBookData.addBookTag(bookId,mBookMark);
 		}
 		else if(mBookMark.getBegin() != newbegin)
 		{
@@ -309,7 +309,7 @@ public class BookActivity extends Activity{
 			Calendar c = Calendar.getInstance();
 			mBookMark.setUpdate_date(Unity.getCurDate(c));
 			mBookMark.setUpdate_time(Unity.getCurTime(c));
-			mBookData.addBookTag(parent,bookId,mBookMark);
+			mBookData.addBookTag(bookId,mBookMark);
 		}
 	}
 
@@ -317,18 +317,17 @@ public class BookActivity extends Activity{
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
-		// ������ɮ�
+
 		if(resultCode == RESULT_OK)
 		{
 			if ( requestCode == RESULT_LOAD_IMAGE )
 			{
-				// ��o�ɮת� Uri
 				Uri uri = data.getData();
 
 				if( uri != null )
 				{ 
-					sharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_TYPE,2);
-					sharePerferenceHelper.getIntent(parent).setString(BOOK_BG_PATH,uri.toString());
+					SharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_TYPE,2);
+					SharePerferenceHelper.getIntent(parent).setString(BOOK_BG_PATH,uri.toString());
 					setBookBg();
 					mTurnBook.refreach();
 				}
@@ -415,7 +414,7 @@ public class BookActivity extends Activity{
 	}
 	/**�ù��]�wDialog*/
 	private  void showScreenDilog(){
-		int type = sharePerferenceHelper.getIntent(this).getInt(BOOK_SCREEN, 0);
+		int type = SharePerferenceHelper.getIntent(this).getInt(BOOK_SCREEN, 0);
 		AlertDialog.Builder ab = new AlertDialog.Builder( this);
 		ab.setTitle(R.string.alert_title_pgbg);
 		ab.setSingleChoiceItems(getResources().getStringArray(R.array.screen_select), type, new DialogInterface.OnClickListener() {
@@ -425,7 +424,7 @@ public class BookActivity extends Activity{
 				// TODO Auto-generated method stub
 				if(screenType!=which)
 				{
-					sharePerferenceHelper.getIntent(parent).setInt(BOOK_SCREEN, which);
+					SharePerferenceHelper.getIntent(parent).setInt(BOOK_SCREEN, which);
 					Toast.makeText(parent, R.string.alert_screen_tip,  Toast.LENGTH_SHORT).show();
 				}
 				dialog.cancel();
@@ -443,7 +442,7 @@ public class BookActivity extends Activity{
 	}
 	/**�]�w�I��dialog*/
 	private  void showChangeBgDialog(){
-		int type = sharePerferenceHelper.getIntent(this).getInt(BOOK_BG_TYPE, 0);
+		int type = SharePerferenceHelper.getIntent(this).getInt(BOOK_BG_TYPE, 0);
 		AlertDialog.Builder ab = new AlertDialog.Builder( this);
 		ab.setTitle(R.string.alert_title_pgbg);
 		ab.setSingleChoiceItems(getResources().getStringArray(R.array.book_bg_select), type, new DialogInterface.OnClickListener() {
@@ -453,7 +452,7 @@ public class BookActivity extends Activity{
 				// TODO Auto-generated method stub
 				switch (which) {
 				case 0:
-					sharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_TYPE,0);
+					SharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_TYPE,0);
 					setBookBg();
 					mTurnBook.refreach();
 					break;
@@ -463,7 +462,7 @@ public class BookActivity extends Activity{
 				case 2:
 					Intent intent = new Intent( Intent.ACTION_PICK );
 					intent.setType( "image/*" );
-					Intent destIntent = Intent.createChooser( intent, "����ɮ�" );
+					Intent destIntent = Intent.createChooser( intent, getString(R.string.alert_title_selectImg));
 					startActivityForResult( destIntent,RESULT_LOAD_IMAGE );
 					break;
 
@@ -483,7 +482,7 @@ public class BookActivity extends Activity{
 		});
 		ab.show();
 	}
-	/**��ܽs�Xdialog*/
+	
 	private  void showProgressDialog(){
 		AlertDialog.Builder ab = new AlertDialog.Builder( this);
 		ab.setTitle(R.string.alert_title_progress);
@@ -538,7 +537,7 @@ public class BookActivity extends Activity{
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
-				mBookData.updateBookEncode(parent,bookId, which);
+				mBookData.updateBookEncode(bookId, which);
 				mTurnBook.setDecoding(decode_array[which]);
 				encode = which;
 				dialog.cancel();
@@ -557,7 +556,7 @@ public class BookActivity extends Activity{
 	/**�]�w�I���C��dialog */
 	private  void showbookbgColorDialog(){
 
-		int color = sharePerferenceHelper.getIntent(parent).getInt(BOOK_BG_COLOR,Color.WHITE);
+		int color = SharePerferenceHelper.getIntent(parent).getInt(BOOK_BG_COLOR,Color.WHITE);
 		ColorPickerDialog mColorPickerDialog = new ColorPickerDialog(this,color);
 		mColorPickerDialog.setTitle(R.string.alert_title_pgbgcolor);
 		mColorPickerDialog.setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
@@ -565,8 +564,8 @@ public class BookActivity extends Activity{
 			@Override
 			public void onColorChanged(int color) {
 				// TODO Auto-generated method stub
-				sharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_TYPE,1);
-				sharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_COLOR,color);
+				SharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_TYPE,1);
+				SharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_COLOR,color);
 				setBookBg();
 				mTurnBook.refreach();
 			}
@@ -585,7 +584,7 @@ public class BookActivity extends Activity{
 				// TODO Auto-generated method stub
 				mTurnBook.setTextColor(color);
 				mTurnBook.refreach();
-				sharePerferenceHelper.getIntent(parent).setInt(BOOK_TEXT_COLOR, color);
+				SharePerferenceHelper.getIntent(parent).setInt(BOOK_TEXT_COLOR, color);
 			}
 		});
 		mColorPickerDialog.setAlphaSliderVisible(true);
@@ -639,7 +638,7 @@ public class BookActivity extends Activity{
 				// TODO Auto-generated method stub
 				int textsize = (int) (Float.valueOf(mSeekBar.getProgress()+init_value)/100f);
 				mTurnBook.setTextSize(textsize);
-				sharePerferenceHelper.getIntent(parent).setInt(BOOK_TEXT_SIZE, textsize);
+				SharePerferenceHelper.getIntent(parent).setInt(BOOK_TEXT_SIZE, textsize);
 				dialog.cancel();
 			}
 		});
@@ -662,7 +661,7 @@ public class BookActivity extends Activity{
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
-				sharePerferenceHelper.getIntent(context).clear();
+				SharePerferenceHelper.getIntent(context).clear();
 				initBook();
 				dialog.cancel();
 			}
