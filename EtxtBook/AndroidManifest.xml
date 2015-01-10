@@ -10,9 +10,9 @@
          />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" /> 
+    <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -34,7 +34,10 @@
             android:name="com.android.ebook.ui.BookActivity"
             android:theme="@android:style/Theme.Black" >
         </activity>
-         
-    </application>
+         <activity android:name="com.google.android.gms.ads.AdActivity"
+              android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
+  </application>
+  
+     
 
 </manifest>

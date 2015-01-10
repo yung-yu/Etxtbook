@@ -15,6 +15,10 @@ import com.android.ebook.ui.BookActivity;
 import com.android.ebook.ui.FileView;
 import com.android.ebook.unit.CustomToast;
 import com.andy.ebook.R;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
@@ -57,7 +61,8 @@ public class MainActivity extends BaseActivity {
 	private List<Integer> removebooklist = new ArrayList<Integer>();
 	FileView mFileView;
 	LinearLayout mAd_container;
-	
+	private AdView adView;
+	private final String MY_AD_UNIT_ID = "ca-app-pub-8866644298400812/1566070888";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -177,12 +182,14 @@ public class MainActivity extends BaseActivity {
 				}
 			}
 		});
+		initAds();
 	}
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		
+		if(adView!=null)
+			adView.resume();
 		showAppMsg();
 		new Thread(new Runnable() {
 
@@ -205,16 +212,38 @@ public class MainActivity extends BaseActivity {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();		
-		
+		if(adView!=null)
+			adView.pause();
 	}
 	
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
+		if(adView!=null)
+			adView.destroy();
 		super.onDestroy();
 		
 	}
+	 
+    public void initAds(){
+    		adView = new AdView(this);
+    		adView.setAdUnitId(MY_AD_UNIT_ID);
+    	    adView.setAdSize(AdSize.SMART_BANNER);
+        mAd_container.addView(adView);
+        AdRequest adRequest = new AdRequest.Builder()
+            .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+            .addTestDevice(getDeviceId()).build();
+        adView.loadAd(adRequest);
+        adView.setAdListener(new AdListener() {
 
+			@Override
+			public void onAdOpened() {
+				// TODO Auto-generated method stub
+				super.onAdOpened();
+			}
+        	 
+		});
+    }
 	public String getDeviceId(){
 
         String android_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);

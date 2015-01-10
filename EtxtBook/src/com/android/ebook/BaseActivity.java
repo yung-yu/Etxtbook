@@ -1,15 +1,12 @@
 package com.android.ebook;
 
-import com.andy.ebook.R;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Logger;
+
 import com.google.android.gms.analytics.Tracker;
 import android.app.Activity;
 import android.os.Bundle;
 
 public class BaseActivity  extends Activity{
-    private final String PROPERTY_ID = "UA-58402590-2";
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -28,17 +25,16 @@ public class BaseActivity  extends Activity{
 		super.onStop();
 	}
     public Tracker getTracker(){
-    		GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-    		analytics.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
-    		
-		Tracker mTracker = analytics.newTracker(R.xml.ga);
-	
-		return mTracker;
+//    		GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+//    		analytics.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
+//		Tracker mTracker = analytics.newTracker(R.xml.ga);
+//		return mTracker;
+    	    return null;
     }
     public void sendScreenName(String screenName){
-    		Tracker t = getTracker();
-  		t.setScreenName(screenName);
-         t.send(new HitBuilders.AppViewBuilder().build());
+//    		Tracker t = getTracker();
+//  		t.setScreenName(screenName);
+//         t.send(new HitBuilders.AppViewBuilder().build());
     }
 
 }
