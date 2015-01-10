@@ -95,7 +95,6 @@ public class TurnBook extends PageWidget {
 			}
 
 		});
-
 	}
 	public boolean prePage(boolean isShowAnim){	
 		if(pagefactory.isfirstPage()){

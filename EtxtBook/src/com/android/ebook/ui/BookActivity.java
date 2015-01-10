@@ -3,22 +3,21 @@ package com.android.ebook.ui;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.Calendar;
-
-import org.apache.http.protocol.HTTP;
-
 import net.margaritov.preference.colorpicker.ColorPickerDialog;
 
-import com.android.ebook.R;
+import com.android.ebook.BaseActivity;
+
 import com.android.ebook.bookturn.TurnBook;
+import com.android.ebook.data.Book;
 import com.android.ebook.data.BookData;
 import com.android.ebook.data.BookMark;
 import com.android.ebook.data.Unity;
 import com.android.ebook.data.SharePerferenceHelper;
 import com.android.ebook.unit.CustomToast;
+import com.andy.ebook.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
-
 import android.R.color;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -48,7 +47,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class BookActivity extends Activity{
+public class BookActivity extends BaseActivity{
 	
 	private final String  BOOK_TEXT_SIZE= "BookTextSize";
 	private final String  BOOK_TEXT_COLOR= "BookTextCOLOR";
@@ -58,7 +57,6 @@ public class BookActivity extends Activity{
 	private final String  BOOK_SCREEN= "BookScreen";
 	private static int RESULT_LOAD_IMAGE = 99999;
 	private Context parent;
-	private String filePath;
 	private TurnBook mTurnBook;
 	private BookData mBookData;
 	private int encode ;
@@ -68,14 +66,16 @@ public class BookActivity extends Activity{
 	private Bitmap myBitmap;
 	private ImageLoader mImageLoader;
 	private boolean isTable=false;
-	private String bookName;
 	private int screenType;
 	private Context context;
+	private Book book;
 	private int bookId;
+	boolean ishasNavBar;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		sendScreenName("¾\Åª­¶­±");
 		isTable = Unity.isTablet(this);
 		context = this;
 		screenType = SharePerferenceHelper.getIntent(this).getInt(BOOK_SCREEN, 0);
@@ -84,54 +84,22 @@ public class BookActivity extends Activity{
 			getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, 
 					WindowManager.LayoutParams.FLAG_FULLSCREEN );
 		}
-		boolean ishasNavBar = hasNavBar(this);
+	    ishasNavBar = hasNavBar(this);
         if(isTable||ishasNavBar){
         		requestWindowFeature(Window.FEATURE_ACTION_BAR);
         }else{
         		requestWindowFeature(Window.FEATURE_NO_TITLE);
         }
-
-
 		parent = this;
 		dm = new DisplayMetrics();
+		mBookData = new BookData(this);
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		Bundle bd = getIntent().getExtras();
-		filePath = bd.getString("filepath");
-		bookName = bd.getString("bookname");
 		bookId = bd.getInt("bookid");
+		book = mBookData.getBook(bookId);
 		initImageLoader();
-		mBookData = new BookData(this);
 		decode_array = parent.getResources().getStringArray(R.array.decoding_value);	    
-		int magin = (int) getResources().getDimension(R.dimen.bookPage_magin); 
-	    int width  = dm.widthPixels;
-	    int height = dm.heightPixels;
-	    height = screenType==0? height - getStatusBarHeight():height;
-	    height = ishasNavBar? height - getnavigation_bar_height():height;
-	    
-		mTurnBook = new TurnBook(this,width,height,magin,magin);	
-		setContentView(mTurnBook);
-		mTurnBook.setVisibility(View.INVISIBLE);
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				initBook();
-				if(mBookMark!=null)
-					mTurnBook.ToBookMarkPage(mBookMark.getBegin());	
-				else
-					mTurnBook.refreach();
-				runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						mTurnBook.setVisibility(View.VISIBLE);
-
-					}
-				});  
-			}
-		}).start();
-
+		createView();
 	}
 	@Override
 	protected void onResume() {
@@ -162,7 +130,6 @@ public class BookActivity extends Activity{
 		    return resources.getDimensionPixelSize(resourceId);
 		}
 		return 0;
-
 	}
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	private boolean hasNavBar(Context context) {
@@ -195,7 +162,7 @@ public class BookActivity extends Activity{
 		}
 	}
 
-	/**ï¿½ï¿½oï¿½Wï¿½hï¿½Tï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½*/
+	/**actionBar°ª«×*/
 	private  int getStatusBarHeight() { 
 		int result = 0;
 		int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
@@ -204,13 +171,43 @@ public class BookActivity extends Activity{
 		} 
 		return result;
 	} 
-	/**ï¿½ï¿½lï¿½ï¿½*/ 
+	
+	private void createView(){
+		if(mTurnBook!=null)
+			mTurnBook.recycle();
+		int magin = (int) getResources().getDimension(R.dimen.bookPage_magin); 
+		int width = dm.widthPixels;
+		int height = screenType==0?dm.heightPixels-getStatusBarHeight():dm.heightPixels;
+		height = ishasNavBar?height-getnavigation_bar_height():height;
+		mTurnBook = new TurnBook(this, width,height,magin,magin);	
+		setContentView(mTurnBook);
+		mTurnBook.setVisibility(View.INVISIBLE);
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				initBook();
+				if(mBookMark!=null)
+					mTurnBook.ToBookMarkPage(mBookMark.getBegin());	
+				else
+					mTurnBook.refreach();
+				runOnUiThread(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						mTurnBook.setVisibility(View.VISIBLE);
+					}
+				});  
+			}
+		}).start();
+	}
 	private  void initBook(){
 		setBookBg();
-		if(filePath.startsWith(BookData.ASSATS_PATH))
-			mTurnBook.setBookFile(filePath.substring(BookData.ASSATS_PATH.length()), true);
+		if(book.getBookPath().startsWith(BookData.ASSATS_PATH))
+			mTurnBook.setBookFile(book.getBookPath().substring(BookData.ASSATS_PATH.length()), true);
 		else
-			mTurnBook.setBookFile(filePath, false);
+			mTurnBook.setBookFile(book.getBookPath(), false);
 		if(isTable){
 			//mTurnBook.getBookPageFactory().setDelay_lineCount(3);
 		}
@@ -229,7 +226,7 @@ public class BookActivity extends Activity{
 				CustomToast.CreateToast(parent, getString(R.string.book_end), Toast.LENGTH_SHORT);
 			}
 		});
-		mTurnBook.getBookPageFactory().setBookName(bookName);
+		mTurnBook.getBookPageFactory().setBookName(book.getBookName());
 		mTurnBook.getBookPageFactory().setM_fontSize_forMsg(getResources().getDimension(R.dimen.txt_msg_textsize));
 		mTurnBook.setTextSize(SharePerferenceHelper.getIntent(this).getInt(BOOK_TEXT_SIZE, 30));
 		mTurnBook.setTextColor(SharePerferenceHelper.getIntent(this).getInt(BOOK_TEXT_COLOR, Color.WHITE));
@@ -280,7 +277,7 @@ public class BookActivity extends Activity{
 		}
 
 	}
-	/**ï¿½sï¿½Wï¿½ï¿½ï¿½ï¿½*/
+	/**·s¼W®ÑÃ±*/
 	private  void addBookTag(){
 		int newbegin = mTurnBook.getBookPageFactory().getM_mbBufBegin();
 		if(mBookMark == null)
@@ -412,7 +409,7 @@ public class BookActivity extends Activity{
 		}
 		return super.dispatchKeyEvent(event);
 	}
-	/**ï¿½Ã¹ï¿½ï¿½]ï¿½wDialog*/
+	//µøµ¡³]©w
 	private  void showScreenDilog(){
 		int type = SharePerferenceHelper.getIntent(this).getInt(BOOK_SCREEN, 0);
 		AlertDialog.Builder ab = new AlertDialog.Builder( this);
@@ -425,7 +422,10 @@ public class BookActivity extends Activity{
 				if(screenType!=which)
 				{
 					SharePerferenceHelper.getIntent(parent).setInt(BOOK_SCREEN, which);
-					Toast.makeText(parent, R.string.alert_screen_tip,  Toast.LENGTH_SHORT).show();
+					screenType = which;
+					switchFullScreen(screenType==1);
+					addBookTag();
+					createView();
 				}
 				dialog.cancel();
 			}
@@ -440,7 +440,17 @@ public class BookActivity extends Activity{
 		});
 		ab.show();
 	}
-	/**ï¿½]ï¿½wï¿½Iï¿½ï¿½dialog*/
+	private void switchFullScreen(boolean isFull){
+		if(isFull){
+			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+					WindowManager.LayoutParams.FLAG_FULLSCREEN );
+		}
+		else{
+			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		}
+	}
+
+    //³]©w­I´º
 	private  void showChangeBgDialog(){
 		int type = SharePerferenceHelper.getIntent(this).getInt(BOOK_BG_TYPE, 0);
 		AlertDialog.Builder ab = new AlertDialog.Builder( this);

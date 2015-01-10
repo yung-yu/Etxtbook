@@ -14,6 +14,8 @@ import com.android.ebook.filebrowser.FileItem;
 import com.android.ebook.ui.BookActivity;
 import com.android.ebook.ui.FileView;
 import com.android.ebook.unit.CustomToast;
+import com.andy.ebook.R;
+
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 import android.os.Bundle;
@@ -42,7 +44,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
 	private MenuDrawer mMenu_left;
 	private ImageView bt_clearcache;
 	private List<Book> booklist = new ArrayList<Book>();
@@ -59,6 +61,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		sendScreenName("­º­¶");
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		mBookData = new BookData(this);
 		context = this;	
@@ -85,8 +88,6 @@ public class MainActivity extends Activity {
 					if(filePath.startsWith(BookData.ASSATS_PATH))
 					{
 						Bundle bd = new Bundle();
-						bd.putString("filepath",booklist.get(position).getBookPath());
-						bd.putString("bookname",booklist.get(position).getBookName());
 						bd.putInt("bookid",booklist.get(position).getBookId());
 						Intent it=new Intent();
 						it.setClass(MainActivity.this, BookActivity.class);
@@ -99,8 +100,6 @@ public class MainActivity extends Activity {
 						if(mf.exists())
 						{   
 							Bundle bd = new Bundle();
-							bd.putString("filepath",booklist.get(position).getBookPath());
-							bd.putString("bookname",booklist.get(position).getBookName());
 							bd.putInt("bookid",booklist.get(position).getBookId());
 							Intent it=new Intent();
 							it.setClass(MainActivity.this, BookActivity.class);
