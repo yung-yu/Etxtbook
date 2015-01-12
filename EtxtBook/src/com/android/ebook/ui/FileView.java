@@ -8,7 +8,7 @@ import java.util.List;
 import com.android.ebook.data.SharePerferenceHelper;
 import com.android.ebook.filebrowser.FileItem;
 import com.android.ebook.filebrowser.FileManager;
-import com.andy.ebook.R;
+import com.org.ebook.R;
 
 import android.app.Activity;
 import android.content.Context;

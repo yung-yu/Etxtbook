@@ -14,7 +14,7 @@ import com.android.ebook.data.BookMark;
 import com.android.ebook.data.Unity;
 import com.android.ebook.data.SharePerferenceHelper;
 import com.android.ebook.unit.CustomToast;
-import com.andy.ebook.R;
+import com.org.ebook.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageSize;

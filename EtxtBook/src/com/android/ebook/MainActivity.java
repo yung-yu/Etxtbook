@@ -14,7 +14,7 @@ import com.android.ebook.filebrowser.FileItem;
 import com.android.ebook.ui.BookActivity;
 import com.android.ebook.ui.FileView;
 import com.android.ebook.unit.CustomToast;
-import com.andy.ebook.R;
+import com.org.ebook.R;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -231,8 +231,9 @@ public class MainActivity extends BaseActivity {
     	    adView.setAdSize(AdSize.SMART_BANNER);
         mAd_container.addView(adView);
         AdRequest adRequest = new AdRequest.Builder()
-            .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-            .addTestDevice(getDeviceId()).build();
+//            .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+//            .addTestDevice(getDeviceId())
+            .build();
         adView.loadAd(adRequest);
         adView.setAdListener(new AdListener() {
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.andy.ebook"
-    android:versionCode="10001"
-    android:versionName="1.001" >
+    package="com.org.ebook"
+    android:versionCode="10004"
+    android:versionName="1.004" >
 
     <uses-sdk
         android:minSdkVersion="10"
