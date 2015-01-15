@@ -11,7 +11,7 @@ import android.view.View;
 
 
 @SuppressLint("WrongCall")
-public class TurnBook extends PageWidget {
+public class TurnBook extends PageWidget implements View.OnTouchListener {
 	Bitmap mCurPageBitmap, mNextPageBitmap;
 	Canvas mCurPageCanvas, mNextPageCanvas;
 	BookPageFactory pagefactory;
@@ -28,7 +28,18 @@ public class TurnBook extends PageWidget {
 		super(context);
 		// TODO Auto-generated constructor stub
 		parent = context;
+		setInit(width, height, maginW, maginh);
+	}
+	public void setInit(int width,int height,int maginW,int maginh){
+		if(width==0||height==0)
+			return;
 		setScreen(width, height);
+		if(mCurPageBitmap!=null)
+			if(!mCurPageBitmap.isRecycled())
+				mCurPageBitmap.recycle();
+		if(mNextPageBitmap!=null)
+			if(!mNextPageBitmap.isRecycled())
+				mNextPageBitmap.recycle();
 		mCurPageBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		mNextPageBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
@@ -36,65 +47,10 @@ public class TurnBook extends PageWidget {
 		mNextPageCanvas = new Canvas(mNextPageBitmap);
 	   
 		pagefactory = new BookPageFactory(width, height, maginW, maginh);
+		
 		pagefactory.onDraw(mCurPageCanvas);
 		setBitmaps(mCurPageBitmap, mCurPageBitmap);
-		setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent e) {
-				// TODO Auto-generated method stub
-				
-				boolean ret=false;
-				if (v == TurnBook.this) {
-					if (e.getAction() == MotionEvent.ACTION_DOWN) {
-						//停止動畫。與forceFinished(boolean)相反，Scroller滾動到最終x與y位置時中止動畫。			
-						abortAnimation();
-						//計算拖拽點對應的拖拽角
-						calcCornerXY(e.getX(), e.getY());
-                        //將文字繪於當前頁
-						pagefactory.onDraw(mCurPageCanvas);
-						if (DragToRight()) {
-							//是否從左邊翻向右邊
-							try {
-								//true，顯示上一頁					
-								pagefactory.prePage();
-							} catch (IOException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}						
-							if(pagefactory.isfirstPage()){
-								if(sonBookChangeListener!=null)
-									sonBookChangeListener.onFirstIndex();
-								return false;
-							}
-							pagefactory.onDraw(mNextPageCanvas);
-							setBitmaps(mCurPageBitmap, mNextPageBitmap);
-		
-						} else {
-							try {
-								//false，顯示下一頁							
-								pagefactory.nextPage();
-							} catch (IOException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-							if(pagefactory.islastPage()){
-								if(sonBookChangeListener!=null)
-									sonBookChangeListener.onFinalIndex();
-								return false;
-							}
-							pagefactory.onDraw(mNextPageCanvas);
-							setBitmaps(mCurPageBitmap, mNextPageBitmap);
-						}
-						
-					}
-                 
-					 ret = doTouchEvent(e);
-					return ret;
-				}
-				return false;
-			}
-
-		});
+		setOnTouchListener(this);
 	}
 	public boolean prePage(boolean isShowAnim){	
 		if(pagefactory.isfirstPage()){
@@ -263,5 +219,62 @@ public class TurnBook extends PageWidget {
 		pagefactory  = null;
 		System.gc();
    }
+
+	@Override
+	public boolean onTouch(View v, MotionEvent e) {
+		// TODO Auto-generated method stub
+		
+		boolean ret=false;
+		if (v == TurnBook.this) {
+			if (e.getAction() == MotionEvent.ACTION_DOWN) {
+				//停止動畫。與forceFinished(boolean)相反，Scroller滾動到最終x與y位置時中止動畫。			
+				abortAnimation();
+				//計算拖拽點對應的拖拽角
+				calcCornerXY(e.getX(), e.getY());
+                //將文字繪於當前頁
+				pagefactory.onDraw(mCurPageCanvas);
+				if (DragToRight()) {
+					//是否從左邊翻向右邊
+					try {
+						//true，顯示上一頁					
+						pagefactory.prePage();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}						
+					if(pagefactory.isfirstPage()){
+						if(sonBookChangeListener!=null)
+							sonBookChangeListener.onFirstIndex();
+						return false;
+					}
+					pagefactory.onDraw(mNextPageCanvas);
+					setBitmaps(mCurPageBitmap, mNextPageBitmap);
+
+				} else {
+					try {
+						//false，顯示下一頁							
+						pagefactory.nextPage();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					if(pagefactory.islastPage()){
+						if(sonBookChangeListener!=null)
+							sonBookChangeListener.onFinalIndex();
+						return false;
+					}
+					pagefactory.onDraw(mNextPageCanvas);
+					setBitmaps(mCurPageBitmap, mNextPageBitmap);
+				}
+				
+			}
+         
+			 ret = doTouchEvent(e);
+			return ret;
+		}
+		return false;
+	}
+
+
 	
 }

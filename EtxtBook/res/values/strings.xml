@@ -35,4 +35,6 @@
     <string name="alert_title_selectImg">選取圖片:</string>
     <string name="delete_success">刪除成功.</string>
     <string name="delete_fail">刪除失敗.</string>
+    <string name="add_mark">新增書簽</string>
+    <string name="add_mark_success">新增書簽成功</string>
 </resources>

@@ -242,6 +242,7 @@ public class BookData {
 		value.put(column.UPDATE_DATE,tag.getUpdate_date());
 		value.put(column.UPDATE_TIME,tag.getUpdate_time());
 		updateBookTime(id, tag.getUpdate_date(), tag.getUpdate_time());
+		delete(Table.BOOK_MARK, column.ID+"="+id);
 		insert(Table.BOOK_MARK, value);
 	}
 	public List<Book> getBookList(){	

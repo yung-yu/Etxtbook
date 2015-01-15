@@ -208,9 +208,7 @@ public class BookActivity extends BaseActivity{
 			mTurnBook.setBookFile(book.getBookPath().substring(BookData.ASSATS_PATH.length()), true);
 		else
 			mTurnBook.setBookFile(book.getBookPath(), false);
-		if(isTable){
-			//mTurnBook.getBookPageFactory().setDelay_lineCount(3);
-		}
+		
 		mTurnBook.setOnBookChangeListener(new TurnBook.onBookChangeListener() {
 
 			@Override
@@ -356,6 +354,10 @@ public class BookActivity extends BaseActivity{
 			break;
 		case R.id.item6:
 			showProgressDialog();
+			break;
+		case R.id.item7:
+			addBookTag();
+			Toast.makeText(context, R.string.add_mark_success, Toast.LENGTH_SHORT).show();
 			break;
 		default:
 			break;
