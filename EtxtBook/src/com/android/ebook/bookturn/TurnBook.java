@@ -17,6 +17,8 @@ public class TurnBook extends PageWidget implements View.OnTouchListener {
 	BookPageFactory pagefactory;
 	Context parent;
 	onBookChangeListener sonBookChangeListener;
+	int width;
+	int height;
 	public void setOnBookChangeListener(onBookChangeListener sonBookChangeListener) {
 		this.sonBookChangeListener = sonBookChangeListener;
 	}
@@ -28,6 +30,7 @@ public class TurnBook extends PageWidget implements View.OnTouchListener {
 		super(context);
 		// TODO Auto-generated constructor stub
 		parent = context;
+
 		setInit(width, height, maginW, maginh);
 	}
 	public void setInit(int width,int height,int maginW,int maginh){
@@ -226,6 +229,7 @@ public class TurnBook extends PageWidget implements View.OnTouchListener {
 		
 		boolean ret=false;
 		if (v == TurnBook.this) {
+			
 			if (e.getAction() == MotionEvent.ACTION_DOWN) {
 				//停止動畫。與forceFinished(boolean)相反，Scroller滾動到最終x與y位置時中止動畫。			
 				abortAnimation();

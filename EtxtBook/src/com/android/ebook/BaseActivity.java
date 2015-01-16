@@ -2,6 +2,12 @@ package com.android.ebook;
 
 
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Logger;
+import com.google.android.gms.analytics.Tracker;
+import com.org.ebook.R;
+
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -24,23 +30,22 @@ public class BaseActivity  extends Activity{
 		// TODO Auto-generated method stub
 		super.onStop();
 	}
-//	public Tracker getTracker(){
-//		//    		GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-//		//    		analytics.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
-//		//		Tracker mTracker = analytics.newTracker(R.xml.ga);
-//		//		return mTracker;
-//		return null;
-//	}
+	public Tracker getTracker(){
+		    		GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+		    		analytics.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
+				Tracker mTracker = analytics.newTracker(R.xml.ga);
+				return mTracker;
+	}
 	public void sendScreenName(String screenName){
 //	    //新增GoogleAnalytics物件
-//		GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-//		analytics.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
-//		//取得追蹤物件
-//		Tracker mTracker = analytics.newTracker(R.xml.ga);
-//		//設定當前畫面名稱
-//		mTracker.setScreenName(screenName);
-//	    //送出訊息
-//		mTracker.send(new HitBuilders.AppViewBuilder().build());
+		GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+		analytics.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
+		//取得追蹤物件
+		Tracker mTracker = analytics.newTracker(R.xml.ga);
+		//設定當前畫面名稱
+		mTracker.setScreenName(screenName);
+	    //送出訊息
+		mTracker.send(new HitBuilders.AppViewBuilder().build());
 	}
 
 }

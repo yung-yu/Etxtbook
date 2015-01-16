@@ -79,10 +79,12 @@ public class BookActivity extends BaseActivity{
 		isTable = Unity.isTablet(this);
 		context = this;
 		screenType = SharePerferenceHelper.getIntent(this).getInt(BOOK_SCREEN, 0);
+		
 		if(screenType!=0)
 		{ 
 			getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, 
 					WindowManager.LayoutParams.FLAG_FULLSCREEN );
+			
 		}
 	    ishasNavBar = hasNavBar(this);
         if(isTable||ishasNavBar){
@@ -123,6 +125,19 @@ public class BookActivity extends BaseActivity{
 		if(mTurnBook != null)
 			mTurnBook.recycle();
 	}
+	//隱藏虛擬鍵
+	public void hideNavigation_bar() {
+	    if(Build.VERSION.SDK_INT < 19){ //19 or above api
+	        View v = this.getWindow().getDecorView();
+	        v.setSystemUiVisibility(View.GONE);
+	    } else {
+	            //for lower api versions.
+	        View decorView = getWindow().getDecorView(); 
+	        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+	        decorView.setSystemUiVisibility(uiOptions);
+	    }
+	}
+	//取得虛擬鍵高度 
 	private int getnavigation_bar_height(){
 		Resources resources = context.getResources();
 		int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
@@ -131,6 +146,7 @@ public class BookActivity extends BaseActivity{
 		}
 		return 0;
 	}
+	//判斷是否有虛擬鍵
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	private boolean hasNavBar(Context context) {
 		Resources res = context.getResources();
@@ -278,6 +294,9 @@ public class BookActivity extends BaseActivity{
 	/**新增書簽*/
 	private  void addBookTag(){
 		int newbegin = mTurnBook.getBookPageFactory().getM_mbBufBegin();
+		int end = mTurnBook.getBookPageFactory().getM_mbBufEnd();
+		if(end==0)
+			return;
 		if(mBookMark == null)
 		{
 			mBookMark = new BookMark();

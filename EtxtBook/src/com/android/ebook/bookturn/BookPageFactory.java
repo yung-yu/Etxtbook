@@ -300,6 +300,7 @@ public class BookPageFactory{
 	protected List<String> pageDown() {
 		String strParagraph = "";
 		List<String> lines = new ArrayList<String>();
+		
 		while (lines.size() < mLineCount && m_mbBufEnd < m_mbBufLen) {
 			byte[] paraBuf = readParagraphForward(m_mbBufEnd); // 讀取一個段落
 			m_mbBufEnd += paraBuf.length;//結束位置後移paraBuf.length
