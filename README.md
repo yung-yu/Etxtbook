@@ -17,7 +17,10 @@
 ###[android-menudrawer](https://github.com/SimonVT/android-menudrawer)
 <br>
 ###[android-ColorPickerPreference](https://github.com/attenzione/android-ColorPickerPreference)
-
+<br/>
+##掃描QRCode下載APK
+---
+![](img/qrcode.png)
    
    
    
