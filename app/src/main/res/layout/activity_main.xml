@@ -57,7 +57,6 @@
         android:id="@+id/desk"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/ad"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/tableRow1"
         android:listSelector="@null"
@@ -66,12 +65,4 @@
         android:stretchMode="columnWidth" >
     </GridView>
 
-    <LinearLayout
-        android:id="@+id/ad"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:orientation="horizontal" >
-    </LinearLayout>
 </RelativeLayout>

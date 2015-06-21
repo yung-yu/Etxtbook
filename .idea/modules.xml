@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/EtxtBook.iml" filepath="$PROJECT_DIR$/EtxtBook.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Etxtbook.iml" filepath="$PROJECT_DIR$/Etxtbook.iml" />
       <module fileurl="file://$PROJECT_DIR$/androidColorPickerPreference/androidColorPickerPreference.iml" filepath="$PROJECT_DIR$/androidColorPickerPreference/androidColorPickerPreference.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/menuDrawer/menuDrawer.iml" filepath="$PROJECT_DIR$/menuDrawer/menuDrawer.iml" />
     </modules>
   </component>
 </project>
-

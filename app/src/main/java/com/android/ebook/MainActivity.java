@@ -11,6 +11,7 @@ import com.android.ebook.data.Book;
 import com.android.ebook.data.BookData;
 import com.android.ebook.data.Unity;
 import com.android.ebook.filebrowser.FileItem;
+import com.android.ebook.gcm.GcmHelper;
 import com.android.ebook.ui.BookActivity;
 import com.android.ebook.ui.FileView;
 import com.android.ebook.unit.CustomToast;
@@ -60,9 +61,7 @@ public class MainActivity extends BaseActivity {
 	private TextView tv_Msg;
 	private List<Integer> removebooklist = new ArrayList<Integer>();
 	FileView mFileView;
-	LinearLayout mAd_container;
-	private AdView adView;
-	private final String MY_AD_UNIT_ID = "ca-app-pub-8866644298400812/1566070888";
+    GcmHelper gcmHelper;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -78,64 +77,58 @@ public class MainActivity extends BaseActivity {
 		iv_addbook = (ImageView)findViewById(R.id.imageButton1);
 		bt_clearcache = (ImageView)findViewById(R.id.imageButton2);
 		tv_Msg = (TextView)findViewById(R.id.tv_msg);
-		mAd_container = (LinearLayout)findViewById(R.id.ad);
 		mBookAdapter = new BookAdapter(this);
 		gv_desk.setAdapter(mBookAdapter);
 		gv_desk.setOnItemClickListener(new OnItemClickListener() {
 
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, final int position,
-					long arg3) {
-				// TODO Auto-generated method stub
-				if(!mBookAdapter.isRemoveMode())
-				{
-					String filePath =booklist.get(position).getBookPath();
-					if(filePath.startsWith(BookData.ASSATS_PATH))
-					{
-						Bundle bd = new Bundle();
-						bd.putInt("bookid",booklist.get(position).getBookId());
-						Intent it=new Intent();
-						it.setClass(MainActivity.this, BookActivity.class);
-						it.putExtras(bd);
-						startActivity(it);
-					}
-					else
-					{
-						File mf = new File(filePath);
-						if(mf.exists())
-						{   
-							Bundle bd = new Bundle();
-							bd.putInt("bookid",booklist.get(position).getBookId());
-							Intent it=new Intent();
-							it.setClass(MainActivity.this, BookActivity.class);
-							it.putExtras(bd);
-							startActivity(it);
+										   @Override
+										   public void onItemClick(AdapterView<?> arg0, View arg1, final int position,
+																   long arg3) {
+											   // TODO Auto-generated method stub
+											   if (!mBookAdapter.isRemoveMode()) {
+												   String filePath = booklist.get(position).getBookPath();
+												   if (filePath.startsWith(BookData.ASSATS_PATH)) {
+													   Bundle bd = new Bundle();
+													   bd.putInt("bookid", booklist.get(position).getBookId());
+													   Intent it = new Intent();
+													   it.setClass(MainActivity.this, BookActivity.class);
+													   it.putExtras(bd);
+													   startActivity(it);
+												   } else {
+													   File mf = new File(filePath);
+													   if (mf.exists()) {
+														   Bundle bd = new Bundle();
+														   bd.putInt("bookid", booklist.get(position).getBookId());
+														   Intent it = new Intent();
+														   it.setClass(MainActivity.this, BookActivity.class);
+														   it.putExtras(bd);
+														   startActivity(it);
 
-						}else{
-							CustomToast.CreateToast(context, getString(R.string.file_not_exist), Toast.LENGTH_SHORT);
-						}
-					}
-				}else{
-					if(removebooklist.contains(booklist.get(position).getBookId())){
-						removebooklist.remove(Integer.valueOf(booklist.get(position).getBookId()));
-						CustomToast.CreateToast(context, booklist.get(position).getBookName(),Toast.LENGTH_SHORT );
-					}else{
-						removebooklist.add(booklist.get(position).getBookId());
-						CustomToast.CreateToast(context, booklist.get(position).getBookName(),Toast.LENGTH_SHORT);
-					}
-					mBookAdapter.notifyDataSetChanged();
-				}
-			}
+													   } else {
+														   CustomToast.CreateToast(context, getString(R.string.file_not_exist), Toast.LENGTH_SHORT);
+													   }
+												   }
+											   } else {
+												   if (removebooklist.contains(booklist.get(position).getBookId())) {
+													   removebooklist.remove(Integer.valueOf(booklist.get(position).getBookId()));
+													   CustomToast.CreateToast(context, booklist.get(position).getBookName(), Toast.LENGTH_SHORT);
+												   } else {
+													   removebooklist.add(booklist.get(position).getBookId());
+													   CustomToast.CreateToast(context, booklist.get(position).getBookName(), Toast.LENGTH_SHORT);
+												   }
+												   mBookAdapter.notifyDataSetChanged();
+											   }
+										   }
 
-		}
-				);
-		iv_addbook.setOnClickListener(new View.OnClickListener(){
+									   }
+		);
+		iv_addbook.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if(!mBookAdapter.isRemoveMode())
+				if (!mBookAdapter.isRemoveMode())
 					mMenu_left.openMenu();
-				else{
+				else {
 					mBookAdapter.setRemoveMode(false);
 					mMenu_left.setTouchMode(MenuDrawer.TOUCH_MODE_FULLSCREEN);
 					showAppMsg();
@@ -147,49 +140,54 @@ public class MainActivity extends BaseActivity {
 			}
 
 		});
-		bt_clearcache.setOnClickListener(new View.OnClickListener(){
+		bt_clearcache.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if(!mBookAdapter.isRemoveMode())
+				if (!mBookAdapter.isRemoveMode())
 					showclearDialog();
-				else{
+				else {
 					ShowTipDeleteBook();
 				}
 			}
 
 		});
 		mFileView.setOnFileEventListener(new FileView.OnFileEventListener() {
-			
+
 			@Override
 			public void selectedFile(FileItem item) {
 				// TODO Auto-generated method stub
-				if(item.getName().endsWith(".txt")){
+				if (item.getName().endsWith(".txt")) {
 					Book mBook = new Book();
-					mBook.setBookName(item.getName().substring(0,item.getName().lastIndexOf(".")));
+					mBook.setBookName(item.getName().substring(0, item.getName().lastIndexOf(".")));
 					mBook.setBookPath(item.getPath());
-					if(!checkbookIsExists(mBook)){
+					if (!checkbookIsExists(mBook)) {
 						Calendar c = Calendar.getInstance();
-						mBookData.addBook(mBook,Unity.getCurDate(c),Unity.getCurTime(c));
+						mBookData.addBook(mBook, Unity.getCurDate(c), Unity.getCurTime(c));
 						notifyDataSetChanged();
 						CustomToast.CreateToast(MainActivity.this, getString(R.string.addbook).replace("&s", item.getName()), Toast.LENGTH_SHORT);
-					}
-					else
-						CustomToast.CreateToast(MainActivity.this,getString(R.string.added).replace("&s", item.getName()), Toast.LENGTH_SHORT);
-				}else{
+					} else
+						CustomToast.CreateToast(MainActivity.this, getString(R.string.added).replace("&s", item.getName()), Toast.LENGTH_SHORT);
+				} else {
 					CustomToast.CreateToast(MainActivity.this, getString(R.string.file_not_exist), Toast.LENGTH_SHORT);
 				}
 			}
 		});
-		initAds();
+		gcmHelper = new GcmHelper(this, new GcmHelper.GCMListener() {
+			@Override
+			public void gcmRegistered(boolean success, String regId) {
+                 if(success){
+
+				 }
+			}
+		});
+		gcmHelper.openGcm();
 	}
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		if(adView!=null)
-			adView.resume();
 		showAppMsg();
 		new Thread(new Runnable() {
 
@@ -211,41 +209,15 @@ public class MainActivity extends BaseActivity {
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
-		super.onPause();		
-		if(adView!=null)
-			adView.pause();
+		super.onPause();
 	}
 	
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
-		if(adView!=null)
-			adView.destroy();
 		super.onDestroy();
 		
 	}
-	 
-    public void initAds(){
-    		adView = new AdView(this);
-            adView.setAdUnitId(MY_AD_UNIT_ID);
-    	    adView.setAdSize(AdSize.SMART_BANNER);
-
-        AdRequest adRequest = new AdRequest.Builder()
-            .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-            .addTestDevice(getDeviceId())
-            .build();
-        adView.loadAd(adRequest);
-        mAd_container.addView(adView);
-        adView.setAdListener(new AdListener() {
-
-			@Override
-			public void onAdOpened() {
-				// TODO Auto-generated method stub
-				super.onAdOpened();
-			}
-
-		});
-    }
 	public String getDeviceId(){
 
         String android_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
