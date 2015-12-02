@@ -3,6 +3,7 @@ package com.android.ebook.util;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.telephony.TelephonyManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +14,12 @@ import java.io.InputStreamReader;
  * Created by andy on 2015/5/24.
  */
 public class AndroidUtil {
+
+    public static String getIMEI(Context context){
+        TelephonyManager tM=(TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+        String imei = tM.getDeviceId();
+        return imei;
+    }
 
     public static String getEmail(Context context) {
         AccountManager accountManager = AccountManager.get(context);
@@ -46,4 +53,5 @@ public class AndroidUtil {
         }
         return out.toString();
     }
+
 }

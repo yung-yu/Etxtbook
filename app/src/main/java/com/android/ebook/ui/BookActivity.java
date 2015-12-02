@@ -55,7 +55,6 @@ public class BookActivity extends BaseActivity{
 	private final String  BOOK_BG_COLOR= "Bookbgclor";
 	private final String  BOOK_SCREEN= "BookScreen";
 	private static int RESULT_LOAD_IMAGE = 99999;
-	private Context parent;
 	private TurnBook mTurnBook;
 	private BookData mBookData;
 	private int encode ;
@@ -64,7 +63,6 @@ public class BookActivity extends BaseActivity{
 	private DisplayMetrics dm ;
 	private Bitmap myBitmap;
 	private ImageLoader mImageLoader;
-	private boolean isTable=false;
 	private int screenType;
 	private Context context;
 	private Book book;
@@ -72,25 +70,12 @@ public class BookActivity extends BaseActivity{
 	boolean ishasNavBar;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
+
 		super.onCreate(savedInstanceState);
-		isTable = Unity.isTablet(this);
 		context = this;
-		screenType = sharePerferenceHelper.getIntent(this).getInt(BOOK_SCREEN, 0);
-		
-		if(screenType!=0)
-		{ 
-			getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, 
-					WindowManager.LayoutParams.FLAG_FULLSCREEN );
-			
-		}
+
 	    ishasNavBar = hasNavBar(this);
-        if(isTable||ishasNavBar){
-        		requestWindowFeature(Window.FEATURE_ACTION_BAR);
-        }else{
-        		requestWindowFeature(Window.FEATURE_NO_TITLE);
-        }
-		parent = this;
+
 		dm = new DisplayMetrics();
 		mBookData = new BookData(this);
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -98,24 +83,21 @@ public class BookActivity extends BaseActivity{
 		bookId = bd.getInt("bookid");
 		book = mBookData.getBook(bookId);
 		initImageLoader();
-		decode_array = parent.getResources().getStringArray(R.array.decoding_value);	    
+		decode_array = getResources().getStringArray(R.array.decoding_value);
 		createView();
 	}
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 
 	}
 	@Override
 	protected void onPause() {
-		// TODO Auto-generated method stub
 		super.onPause();
 		addBookTag();
 	}
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
 		if(myBitmap != null)
 			if(!myBitmap.isRecycled())
@@ -199,7 +181,6 @@ public class BookActivity extends BaseActivity{
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				initBook();
 				if(mBookMark!=null)
 					mTurnBook.ToBookMarkPage(mBookMark.getBegin());	
@@ -209,7 +190,6 @@ public class BookActivity extends BaseActivity{
 
 					@Override
 					public void run() {
-						// TODO Auto-generated method stub
 						mTurnBook.setVisibility(View.VISIBLE);
 					}
 				});  
@@ -227,15 +207,13 @@ public class BookActivity extends BaseActivity{
 
 			@Override
 			public void onFirstIndex() {
-				// TODO Auto-generated method stub			   
-				CustomToast.CreateToast(parent, getString(R.string.book_start), Toast.LENGTH_SHORT);
+				CustomToast.CreateToast(context, getString(R.string.book_start), Toast.LENGTH_SHORT);
 
 			}
 
 			@Override
 			public void onFinalIndex() {
-				// TODO Auto-generated method stub
-				CustomToast.CreateToast(parent, getString(R.string.book_end), Toast.LENGTH_SHORT);
+				CustomToast.CreateToast(context, getString(R.string.book_end), Toast.LENGTH_SHORT);
 			}
 		});
 		mTurnBook.getBookPageFactory().setBookName(book.getBookName());
@@ -289,7 +267,6 @@ public class BookActivity extends BaseActivity{
 		}
 
 	}
-	/**�s�W��ñ*/
 	private  void addBookTag(){
 		int newbegin = mTurnBook.getBookPageFactory().getM_mbBufBegin();
 		int end = mTurnBook.getBookPageFactory().getM_mbBufEnd();
@@ -327,7 +304,6 @@ public class BookActivity extends BaseActivity{
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 
 		if(resultCode == RESULT_OK)
@@ -338,21 +314,20 @@ public class BookActivity extends BaseActivity{
 
 				if( uri != null )
 				{ 
-					sharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_TYPE,2);
-					sharePerferenceHelper.getIntent(parent).setString(BOOK_BG_PATH,uri.toString());
+					sharePerferenceHelper.getIntent(context).setInt(BOOK_BG_TYPE,2);
+					sharePerferenceHelper.getIntent(context).setString(BOOK_BG_PATH,uri.toString());
 					setBookBg();
 					mTurnBook.refreach();
 				}
 				else
 				{
-					Toast.makeText(parent, getString(R.string.file_not_exist), Toast.LENGTH_SHORT).show();
+					Toast.makeText(context, getString(R.string.file_not_exist), Toast.LENGTH_SHORT).show();
 				}
 			}
 		}
 	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
 		switch (item.getItemId()) {
 		case R.id.item1:
 			showDecodeDialog();
@@ -383,12 +358,13 @@ public class BookActivity extends BaseActivity{
 	}
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
+
 		return super.onContextItemSelected(item);
 	}
 	@Override
 	public void onContextMenuClosed(Menu menu) {
-		// TODO Auto-generated method stub
+
+
 		super.onContextMenuClosed(menu);
 	}
 
@@ -403,7 +379,7 @@ public class BookActivity extends BaseActivity{
 	private boolean isclick2 = false;
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
-		// TODO Auto-generated method stub
+
 		if(event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN)
 		{  
 			if(isclick1)
@@ -437,10 +413,9 @@ public class BookActivity extends BaseActivity{
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				if(screenType!=which)
 				{
-					sharePerferenceHelper.getIntent(parent).setInt(BOOK_SCREEN, which);
+					sharePerferenceHelper.getIntent(context).setInt(BOOK_SCREEN, which);
 					screenType = which;
 					switchFullScreen(screenType==1);
 					addBookTag();
@@ -453,7 +428,6 @@ public class BookActivity extends BaseActivity{
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				dialog.cancel();
 			}
 		});
@@ -478,10 +452,9 @@ public class BookActivity extends BaseActivity{
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				switch (which) {
 				case 0:
-					sharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_TYPE,0);
+					sharePerferenceHelper.getIntent(context).setInt(BOOK_BG_TYPE,0);
 					setBookBg();
 					mTurnBook.refreach();
 					break;
@@ -505,7 +478,6 @@ public class BookActivity extends BaseActivity{
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				dialog.cancel();
 			}
 		});
@@ -528,20 +500,17 @@ public class BookActivity extends BaseActivity{
 
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
 
 			}
 
 			@Override
 			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
 
 			}
 
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
-				// TODO Auto-generated method stub
 				float tmp = Float.valueOf(progress)/100f;
 				mTurnBook.setProgress(tmp);
 				mMsg.setText(getResources().getString(R.string.book_progress)+" : "+new DecimalFormat("00.00").format(tmp));
@@ -551,7 +520,6 @@ public class BookActivity extends BaseActivity{
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				dialog.cancel();
 			}
 		});
@@ -565,7 +533,6 @@ public class BookActivity extends BaseActivity{
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				mBookData.updateBookEncode(bookId, which);
 				mTurnBook.setDecoding(decode_array[which]);
 				encode = which;
@@ -576,7 +543,6 @@ public class BookActivity extends BaseActivity{
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				dialog.cancel();
 			}
 		});
@@ -585,16 +551,15 @@ public class BookActivity extends BaseActivity{
 	/**�]�w�I���C��dialog */
 	private  void showbookbgColorDialog(){
 
-		int color = sharePerferenceHelper.getIntent(parent).getInt(BOOK_BG_COLOR,Color.WHITE);
+		int color = sharePerferenceHelper.getIntent(context).getInt(BOOK_BG_COLOR,Color.WHITE);
 		ColorPickerDialog mColorPickerDialog = new ColorPickerDialog(this,color);
 		mColorPickerDialog.setTitle(R.string.alert_title_pgbgcolor);
 		mColorPickerDialog.setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
 
 			@Override
 			public void onColorChanged(int color) {
-				// TODO Auto-generated method stub
-				sharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_TYPE,1);
-				sharePerferenceHelper.getIntent(parent).setInt(BOOK_BG_COLOR,color);
+				sharePerferenceHelper.getIntent(context).setInt(BOOK_BG_TYPE,1);
+				sharePerferenceHelper.getIntent(context).setInt(BOOK_BG_COLOR,color);
 				setBookBg();
 				mTurnBook.refreach();
 			}
@@ -610,10 +575,9 @@ public class BookActivity extends BaseActivity{
 
 			@Override
 			public void onColorChanged(int color) {
-				// TODO Auto-generated method stub
 				mTurnBook.setTextColor(color);
 				mTurnBook.refreach();
-				sharePerferenceHelper.getIntent(parent).setInt(BOOK_TEXT_COLOR, color);
+				sharePerferenceHelper.getIntent(context).setInt(BOOK_TEXT_COLOR, color);
 			}
 		});
 		mColorPickerDialog.setAlphaSliderVisible(true);
@@ -638,21 +602,17 @@ public class BookActivity extends BaseActivity{
 
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
 
 			}
 
 			@Override
 			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
 
 			}
 
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
-				// TODO Auto-generated method stub
-
 				String valStr = df.format((progress+init_value)/100f);
 				et1.setText(valStr);
 
@@ -664,10 +624,9 @@ public class BookActivity extends BaseActivity{
 
 			@Override
 			public void onClick(DialogInterface dialog,int which) {
-				// TODO Auto-generated method stub
 				int textsize = (int) (Float.valueOf(mSeekBar.getProgress()+init_value)/100f);
 				mTurnBook.setTextSize(textsize);
-				sharePerferenceHelper.getIntent(parent).setInt(BOOK_TEXT_SIZE, textsize);
+				sharePerferenceHelper.getIntent(context).setInt(BOOK_TEXT_SIZE, textsize);
 				dialog.cancel();
 			}
 		});
@@ -675,7 +634,6 @@ public class BookActivity extends BaseActivity{
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				dialog.cancel();
 			}
 
@@ -689,7 +647,6 @@ public class BookActivity extends BaseActivity{
 		ab.setNegativeButton(R.string.alert_ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				sharePerferenceHelper.getIntent(context).clear();
 				initBook();
 				dialog.cancel();
@@ -699,7 +656,6 @@ public class BookActivity extends BaseActivity{
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				dialog.cancel();
 			}
 		});

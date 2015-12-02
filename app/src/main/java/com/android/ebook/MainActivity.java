@@ -11,28 +11,21 @@ import com.android.ebook.data.Book;
 import com.android.ebook.data.BookData;
 import com.android.ebook.data.Unity;
 import com.android.ebook.filebrowser.FileItem;
-import com.android.ebook.gcm.GcmHelper;
 import com.android.ebook.ui.BookActivity;
-import com.android.ebook.ui.FileView;
+import com.android.ebook.filebrowser.FileView;
 import com.android.ebook.unit.CustomToast;
 import com.org.ebook.R;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.graphics.Color;
-import android.telephony.TelephonyManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -45,7 +38,6 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,7 +53,6 @@ public class MainActivity extends BaseActivity {
 	private TextView tv_Msg;
 	private List<Integer> removebooklist = new ArrayList<Integer>();
 	FileView mFileView;
-    GcmHelper gcmHelper;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -174,15 +165,7 @@ public class MainActivity extends BaseActivity {
 				}
 			}
 		});
-		gcmHelper = new GcmHelper(this, new GcmHelper.GCMListener() {
-			@Override
-			public void gcmRegistered(boolean success, String regId) {
-                 if(success){
 
-				 }
-			}
-		});
-		gcmHelper.openGcm();
 	}
 	@Override
 	protected void onResume() {

@@ -1,0 +1,278 @@
+Number of Packages:310
+
+Activity Resolver Table:
+  Full MIME Types:
+      text/plain:
+        3d3dc78a com.mplusapp/com.taiwanmobile.mplusapp.ui.share.ShareTargetListActivity filter 2004b75a
+          Action: "android.intent.action.SEND"
+          Category: "android.intent.category.DEFAULT"
+          Type: "text/plain"
+      image/*:
+        3d3dc78a com.mplusapp/com.taiwanmobile.mplusapp.ui.share.ShareTargetListActivity filter 3b7bad8b
+          Action: "android.intent.action.SEND"
+          Category: "android.intent.category.DEFAULT"
+          Type: "image"
+          mPriority=0, mHasPartialTypes=true
+
+  Base MIME Types:
+      text:
+        3d3dc78a com.mplusapp/com.taiwanmobile.mplusapp.ui.share.ShareTargetListActivity filter 2004b75a
+          Action: "android.intent.action.SEND"
+          Category: "android.intent.category.DEFAULT"
+          Type: "text/plain"
+
+  Wild MIME Types:
+      image:
+        3d3dc78a com.mplusapp/com.taiwanmobile.mplusapp.ui.share.ShareTargetListActivity filter 3b7bad8b
+          Action: "android.intent.action.SEND"
+          Category: "android.intent.category.DEFAULT"
+          Type: "image"
+          mPriority=0, mHasPartialTypes=true
+
+  Schemes:
+      http:
+        4d631fb com.mplusapp/com.taiwanmobile.mplusapp.ui.AddOnToolsActivity filter 2ff59767
+          Action: "android.intent.action.VIEW"
+          Category: "android.intent.category.BROWSABLE"
+          Category: "android.intent.category.DEFAULT"
+          Scheme: "http"
+          Authority: "60.199.128.1": -1
+          Authority: "club.mplusapp.com": -1
+          Path: "PatternMatcher{LITERAL: /mplusapp/download}"
+          Path: "PatternMatcher{LITERAL: /mplusapp/download}"
+      mplusmessenger:
+        4d631fb com.mplusapp/com.taiwanmobile.mplusapp.ui.AddOnToolsActivity filter 5c6ef26
+          Action: "android.intent.action.VIEW"
+          Category: "android.intent.category.BROWSABLE"
+          Category: "android.intent.category.DEFAULT"
+          Scheme: "mplusmessenger"
+
+  Non-Data Actions:
+      android.intent.action.MAIN:
+        358ff218 com.mplusapp/com.taiwanmobile.mplusapp.naturaltel.ui.activity.MessagePlus filter 1ead9b05
+          Action: "android.intent.action.MAIN"
+          Category: "android.intent.category.LAUNCHER"
+        9d9471 com.mplusapp/com.taiwanmobile.mplusapp.ui.voip.activity.InCallActivity filter 70b6e68
+          Action: "android.intent.action.MAIN"
+        6b8d256 com.mplusapp/com.taiwanmobile.mplusapp.ui.voip.activity.InComingCallActivity filter 7f1e281
+          Action: "android.intent.action.MAIN"
+
+  MIME Typed Actions:
+      android.intent.action.SEND:
+        3d3dc78a com.mplusapp/com.taiwanmobile.mplusapp.ui.share.ShareTargetListActivity filter 2004b75a
+          Action: "android.intent.action.SEND"
+          Category: "android.intent.category.DEFAULT"
+          Type: "text/plain"
+        3d3dc78a com.mplusapp/com.taiwanmobile.mplusapp.ui.share.ShareTargetListActivity filter 3b7bad8b
+          Action: "android.intent.action.SEND"
+          Category: "android.intent.category.DEFAULT"
+          Type: "image"
+          mPriority=0, mHasPartialTypes=true
+
+Receiver Resolver Table:
+  Schemes:
+      sms:
+        314bf2d7 com.mplusapp/com.taiwanmobile.mplusapp.receiver.sms.BinarySMSReceiver filter cf44550
+          Action: "android.intent.action.DATA_SMS_RECEIVED"
+          Scheme: "sms"
+          mPriority=2147483647, mHasPartialTypes=false
+
+  Non-Data Actions:
+      android.intent.action.ACTION_POWER_DISCONNECTED:
+        a9e17c4 com.mplusapp/com.taiwanmobile.mplusapp.receiver.BootReceiver filter 1d001349
+          Action: "android.intent.action.BOOT_COMPLETED"
+          Action: "android.intent.action.USER_PRESENT"
+          Action: "android.intent.action.GTALK_CONNECTED"
+          Action: "android.intent.action.GTALK_DISCONNECTED"
+          Action: "android.intent.action.ACTION_POWER_CONNECTED"
+          Action: "android.intent.action.ACTION_POWER_DISCONNECTED"
+      android.intent.action.GTALK_DISCONNECTED:
+        a9e17c4 com.mplusapp/com.taiwanmobile.mplusapp.receiver.BootReceiver filter 1d001349
+          Action: "android.intent.action.BOOT_COMPLETED"
+          Action: "android.intent.action.USER_PRESENT"
+          Action: "android.intent.action.GTALK_CONNECTED"
+          Action: "android.intent.action.GTALK_DISCONNECTED"
+          Action: "android.intent.action.ACTION_POWER_CONNECTED"
+          Action: "android.intent.action.ACTION_POWER_DISCONNECTED"
+        162606ad com.mplusapp/com.taiwanmobile.mplusapp.logupload.ConnectBroadcastReceiver filter aafe96f
+          Action: "android.net.conn.CONNECTIVITY_CHANGE"
+          Action: "android.intent.action.GTALK_CONNECTED"
+          Action: "android.intent.action.GTALK_DISCONNECTED"
+      com.mplusapp.voip.receiver.voipfilterName:
+        1b07bde2 com.mplusapp/com.taiwanmobile.mplusapp.receiver.voip.VoipBroadcastReceiver filter 3bc21ee4
+          Action: "com.mplusapp.voip.receiver.voipfilterName"
+      android.net.conn.CONNECTIVITY_CHANGE:
+        1cf2e573 com.mplusapp/com.taiwanmobile.mplusapp.receiver.NetworkStatusMonitor filter 1f68cf4d
+          Action: "android.net.conn.CONNECTIVITY_CHANGE"
+        3f46ec30 com.mplusapp/com.taiwanmobile.mplusapp.ui.sticker.component.stickerTransaction.ConnectivityChangeReceiver filter 125ea44e
+          Action: "android.net.conn.CONNECTIVITY_CHANGE"
+        162606ad com.mplusapp/com.taiwanmobile.mplusapp.logupload.ConnectBroadcastReceiver filter aafe96f
+          Action: "android.net.conn.CONNECTIVITY_CHANGE"
+          Action: "android.intent.action.GTALK_CONNECTED"
+          Action: "android.intent.action.GTALK_DISCONNECTED"
+      android.intent.action.LOCALE_CHANGED:
+        2a4960a9 com.mplusapp/com.taiwanmobile.mplusapp.receiver.LanguageChangeReceiver filter 20e0667c
+          Action: "android.intent.action.LOCALE_CHANGED"
+      com.google.android.c2dm.intent.RECEIVE:
+        867d62e com.mplusapp/com.google.android.gcm.GCMBroadcastReceiver filter d2d2277
+          Action: "com.google.android.c2dm.intent.RECEIVE"
+          Action: "com.google.android.c2dm.intent.REGISTRATION"
+          Category: "com.mplusapp"
+      android.intent.action.BOOT_COMPLETED:
+        a9e17c4 com.mplusapp/com.taiwanmobile.mplusapp.receiver.BootReceiver filter 1d001349
+          Action: "android.intent.action.BOOT_COMPLETED"
+          Action: "android.intent.action.USER_PRESENT"
+          Action: "android.intent.action.GTALK_CONNECTED"
+          Action: "android.intent.action.GTALK_DISCONNECTED"
+          Action: "android.intent.action.ACTION_POWER_CONNECTED"
+          Action: "android.intent.action.ACTION_POWER_DISCONNECTED"
+      android.intent.action.USER_PRESENT:
+        a9e17c4 com.mplusapp/com.taiwanmobile.mplusapp.receiver.BootReceiver filter 1d001349
+          Action: "android.intent.action.BOOT_COMPLETED"
+          Action: "android.intent.action.USER_PRESENT"
+          Action: "android.intent.action.GTALK_CONNECTED"
+          Action: "android.intent.action.GTALK_DISCONNECTED"
+          Action: "android.intent.action.ACTION_POWER_CONNECTED"
+          Action: "android.intent.action.ACTION_POWER_DISCONNECTED"
+      android.intent.action.GTALK_CONNECTED:
+        a9e17c4 com.mplusapp/com.taiwanmobile.mplusapp.receiver.BootReceiver filter 1d001349
+          Action: "android.intent.action.BOOT_COMPLETED"
+          Action: "android.intent.action.USER_PRESENT"
+          Action: "android.intent.action.GTALK_CONNECTED"
+          Action: "android.intent.action.GTALK_DISCONNECTED"
+          Action: "android.intent.action.ACTION_POWER_CONNECTED"
+          Action: "android.intent.action.ACTION_POWER_DISCONNECTED"
+        162606ad com.mplusapp/com.taiwanmobile.mplusapp.logupload.ConnectBroadcastReceiver filter aafe96f
+          Action: "android.net.conn.CONNECTIVITY_CHANGE"
+          Action: "android.intent.action.GTALK_CONNECTED"
+          Action: "android.intent.action.GTALK_DISCONNECTED"
+      android.intent.action.ACTION_POWER_CONNECTED:
+        a9e17c4 com.mplusapp/com.taiwanmobile.mplusapp.receiver.BootReceiver filter 1d001349
+          Action: "android.intent.action.BOOT_COMPLETED"
+          Action: "android.intent.action.USER_PRESENT"
+          Action: "android.intent.action.GTALK_CONNECTED"
+          Action: "android.intent.action.GTALK_DISCONNECTED"
+          Action: "android.intent.action.ACTION_POWER_CONNECTED"
+          Action: "android.intent.action.ACTION_POWER_DISCONNECTED"
+      android.provider.Telephony.SMS_RECEIVED:
+        d0c65cf com.mplusapp/com.taiwanmobile.mplusapp.receiver.sms.SMSReceiver filter b476f13
+          Action: "android.provider.Telephony.SMS_RECEIVED"
+          mPriority=2147483647, mHasPartialTypes=false
+      ChatServiceMPlus:
+        22669b5c com.mplusapp/com.taiwanmobile.mplusapp.naturaltel.service.ChatBroadcastListener filter 3157ea02
+          Action: "ChatServiceMPlus"
+      com.google.android.c2dm.intent.REGISTRATION:
+        867d62e com.mplusapp/com.google.android.gcm.GCMBroadcastReceiver filter d2d2277
+          Action: "com.google.android.c2dm.intent.RECEIVE"
+          Action: "com.google.android.c2dm.intent.REGISTRATION"
+          Category: "com.mplusapp"
+
+Service Resolver Table:
+  Non-Data Actions:
+      android.content.SyncAdapter:
+        2e2e5e65 com.mplusapp/com.taiwanmobile.mplusapp.naturaltel.service.syncadapter.ContactsSyncAdapterService filter 1a7bc738
+          Action: "android.content.SyncAdapter"
+      com.mplus.transaction.upload.CHECK_ALL:
+        319f273a com.mplusapp/com.taiwanmobile.mplusapp.ui.sticker.component.stickerTransaction.StickerTransactionUploadService filter ab71311
+          Action: "com.mplus.transaction.upload.CHECK_ALL"
+          Action: "com.mplus.transaction.upload.UPLOAD_ITEM"
+      com.mplusapp.MQTTService:
+        2f938feb com.mplusapp/.MQTTService filter 27e87c76
+          Action: "com.mplusapp.MQTTService"
+          mPriority=1000, mHasPartialTypes=false
+      android.accounts.AccountAuthenticator:
+        32701148 com.mplusapp/com.taiwanmobile.mplusapp.naturaltel.service.authenticator.AuthenticationService filter 16a5a79b
+          Action: "android.accounts.AccountAuthenticator"
+      com.mplus.transaction.upload.UPLOAD_ITEM:
+        319f273a com.mplusapp/com.taiwanmobile.mplusapp.ui.sticker.component.stickerTransaction.StickerTransactionUploadService filter ab71311
+          Action: "com.mplus.transaction.upload.CHECK_ALL"
+          Action: "com.mplus.transaction.upload.UPLOAD_ITEM"
+
+Permissions:
+  Permission [com.mplusapp.permission.C2D_MESSAGE] (4ab7be1):
+    sourcePackage=com.mplusapp
+    uid=10668 gids=[] type=0 prot=signature
+    packageSetting=PackageSetting{2dc87d06 com.mplusapp/10668}
+    perm=Permission{d193fc7 com.mplusapp.permission.C2D_MESSAGE}
+
+Registered ContentProviders:
+  com.mplusapp/com.taiwanmobile.mplusapp.ui.sticker.component.stickerTransaction.StickerTransactionProvider:
+    Provider{2018f9f4 com.mplusapp/com.taiwanmobile.mplusapp.ui.sticker.component.stickerTransaction.StickerTransactionProvider}
+
+ContentProvider Authorities:
+  [com.mplusapp.sticker.transaction]:
+    Provider{2018f9f4 com.mplusapp/com.taiwanmobile.mplusapp.ui.sticker.component.stickerTransaction.StickerTransactionProvider}
+      applicationInfo=ApplicationInfo{d82f51d com.mplusapp}
+
+Key Set Manager:
+  [com.mplusapp]
+      Signing KeySets: 1452
+
+Packages:
+  Package [com.mplusapp] (2dc87d06):
+    userId=10668 gids=[1028, 1015, 3003, 3002, 3001]
+    pkg=Package{18df6392 com.mplusapp}
+    codePath=/data/app/com.mplusapp-1
+    resourcePath=/data/app/com.mplusapp-1
+    legacyNativeLibraryDir=/data/app/com.mplusapp-1/lib
+    primaryCpuAbi=armeabi-v7a
+    secondaryCpuAbi=null
+    versionCode=29205 targetSdk=14
+    versionName=2.9.205
+    applicationInfo=ApplicationInfo{d82f51d com.mplusapp}
+    flags=[ DEBUGGABLE HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP ]
+    dataDir=/data/data/com.mplusapp
+    supportsScreens=[small, medium, large, xlarge, resizeable, anyDensity]
+    timeStamp=2015-06-18 17:33:00
+    firstInstallTime=2015-06-18 11:03:20
+    lastUpdateTime=2015-06-18 17:33:04
+    signatures=PackageSignatures{3c601163 [fc5c160]}
+    permissionsFixed=true haveGids=true installStatus=1
+    pkgFlags=[ DEBUGGABLE HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP ]
+    User 0:  installed=true hidden=false stopped=false notLaunched=false enabled=0
+    grantedPermissions:
+      android.permission.DISABLE_KEYGUARD
+      android.permission.READ_PHONE_STATE
+      android.permission.RESTART_PACKAGES
+      android.permission.READ_CONTACTS
+      android.permission.RECEIVE_SMS
+      android.permission.READ_SMS
+      android.permission.WAKE_LOCK
+      android.permission.GET_ACCOUNTS
+      android.permission.CAMERA
+      com.google.android.providers.gsf.permission.READ_GSERVICES
+      com.htc.launcher.permission.UPDATE_SHORTCUT
+      android.permission.READ_CALL_LOG
+      android.permission.WRITE_CONTACTS
+      com.android.launcher.permission.INSTALL_SHORTCUT
+      android.permission.AUTHENTICATE_ACCOUNTS
+      android.permission.MANAGE_ACCOUNTS
+      com.google.android.c2dm.permission.RECEIVE
+      android.permission.BLUETOOTH_ADMIN
+      android.permission.ACCESS_NETWORK_STATE
+      android.permission.VIBRATE
+      com.google.android.apps.photos.permission.GOOGLE_PHOTOS
+      android.permission.READ_SYNC_STATS
+      com.mplusapp.permission.C2D_MESSAGE
+      android.permission.INTERNET
+      android.permission.WRITE_CALL_LOG
+      android.permission.ACCESS_COARSE_LOCATION
+      android.permission.RECORD_AUDIO
+      android.permission.READ_SYNC_SETTINGS
+      android.permission.PROCESS_OUTGOING_CALLS
+      android.permission.WRITE_EXTERNAL_STORAGE
+      com.android.launcher.permission.UNINSTALL_SHORTCUT
+      android.permission.GET_TASKS
+      android.permission.ACCESS_FINE_LOCATION
+      android.permission.BROADCAST_STICKY
+      com.android.vending.BILLING
+      android.permission.BLUETOOTH
+      android.permission.MODIFY_AUDIO_SETTINGS
+      android.permission.RECEIVE_BOOT_COMPLETED
+      android.permission.READ_EXTERNAL_STORAGE
+      com.htc.launcher.permission.READ_SETTINGS
+      android.permission.WRITE_SYNC_SETTINGS
+      android.permission.WRITE_SMS
+      android.permission.CALL_PHONE
+      android.permission.ACCESS_WIFI_STATE
+      android.permission.USE_CREDENTIALS
