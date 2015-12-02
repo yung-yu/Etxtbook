@@ -6,4 +6,4 @@ android:
     - extra-android-m2repository
     - extra-android-support
 script:  
-  - ./gradlew assembleRelease
+  - ./gradlew assembleRelease --info 
