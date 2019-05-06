@@ -7,13 +7,6 @@
 ![](img/Screenshot_2015-03-04-22-57-12.png)
 ![](img/Screenshot_2015-03-04-22-57-42.png)
 <br/>
-## 使用
----
-### 利用 git clone ,再使用Android Studio用open an existing Android Studio project開啓專案。
-##參考
----
-### [android-menudrawer](https://github.com/SimonVT/android-menudrawer)
-### [android-ColorPickerPreference](https://github.com/attenzione/android-ColorPickerPreference)
    
    
    
